@@ -1,0 +1,88 @@
+---
+title: ""
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+source(here::here("scripts", "_setup.R"), echo = FALSE)
+source(here::here("scripts", "load-data.R"), echo = FALSE)
+source(here::here("scripts", "overview.R"), echo = FALSE)
+source(here::here("scripts", "KPIs.R"), echo = FALSE)
+source(here::here("scripts", "KPIs_2.R"), echo = FALSE)
+source(here::here("scripts", "trends.R"), echo = FALSE)
+
+library(showtext)
+showtext_auto()  # Enables custom fonts in ggplot2
+
+# Register Lato font
+font_add_google("Lato", "Lato")
+```
+
+# Member Growth {#no-member}
+
+```{r}
+#| fig-align: left
+#| fig-width: 10
+#| fig-height: 4
+#| warning: false
+#| message: false
+#| echo: false
+
+
+ggplot(signups_monthly_filtered, aes(x = Month, y = Total_Signups)) +
+  geom_line(color = "#212752", size = 1) +
+  geom_point(color = "#212752", size = 2) +
+  labs(
+    title = "Monthly Member Signups",
+    subtitle = glue::glue("As of {format(report_date, '%d %B %Y')}"),
+    x = "",
+    y = ""
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "2 months") +
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+    axis.text.y = element_text(size = 8),
+    plot.title = element_text(size = 14, family = "Lato", color = "#2F3E46", face = "bold"),
+    plot.subtitle = element_text(size = 12, face = "italic", family = "Lato", color = "#2F3E46"),
+    panel.grid.major.x = element_line(color = "#f0f0f0"),  # light horizontal gridlines
+    panel.grid.major.y = element_line(color = "#f0f0f0"),
+    panel.grid.minor = element_blank()
+  )
+
+signups_monthly_cumulative <- signups_monthly_filtered %>%
+  arrange(Month) %>%
+  mutate(Cumulative_Signups = cumsum(Total_Signups))
+
+ggplot(signups_monthly_cumulative, aes(x = Month, y = Cumulative_Signups)) +
+  geom_line(color = "#212752", size = 1) +
+  geom_point(color = "#212752", size = 2) +
+  labs(
+    title = "Cumulative Member Signups",
+    subtitle = glue::glue("As of {format(report_date, '%d %B %Y')}"),
+    x = "",
+    y = ""
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "2 months") +
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+    axis.text.y = element_text(size = 8),
+    plot.title = element_text(size = 14, family = "Lato", color = "#2F3E46", face = "bold"),
+    plot.subtitle = element_text(size = 12, face = "italic", family = "Lato", color = "#2F3E46"),
+    panel.grid.major.x = element_line(color = "#f0f0f0"),
+    panel.grid.major.y = element_line(color = "#f0f0f0"),
+    panel.grid.minor = element_blank()
+  )
+```
+
+# Longterm Retention {#long-ret}
+
+**`r long_term_retained_members`** out of **`r long_term_total_members` members**, or **`r percentage_retained`**, are considered long term active members of the Collaboratory, demonstrating stable involvement throughout the past year. The target for this indicator is set as **≥ 30%.**
+
+Long-term retention measures the proportion of members who have logged in **at least once every 90 days** within the past 12 months, highlighting consistent and ongoing participation.
+
+

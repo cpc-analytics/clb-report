@@ -13,5 +13,11 @@ body {
 }
 
 .navbar-nav .nav-link:hover {
-  color: #051D4F !important;  /* Darker blue on hover */
+  color: #F09F33 !important;  /* Darker blue on hover */
+}
+
+h1.title {
+  color: #051D4F;   /* change to your desired color */
+  font-family: "Lato", sans-serif;  /* optional: match your report font */
+  font-weight: bold;  /* optional */
 }

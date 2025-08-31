@@ -73,7 +73,7 @@ ggplot(active_kpi_plot, aes(x = week, y = prop_active_90d)) +
 
 ```
 
-# Posting Activity {#posting-activity}
+# Posting Activity {#posting-act}
 
 Collaboratory members posting at least once per month follows a consistent positive trend.  
 
@@ -421,7 +421,7 @@ engagement_table_secret %>%
 </div>
 :::
 
-# Engagement Levels
+# Engagement Levels {#eng-levels}
 
 ```{r}
 #| fig-align: center

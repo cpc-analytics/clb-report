@@ -1,12 +1,13 @@
 ---
 title: ""
-format: html
+format:
+    html:
+      include-in-header: fonts.html
 editor: visual
+
 ---
 
-# Geographic Representation
-
-Members are connecting from **XX countries**.
+# Geographic Representation {#geo-rep}
 
 ```{r}
 #| label: setup
@@ -23,10 +24,13 @@ showtext_auto()  # Enables custom fonts in ggplot2
 font_add_google("Lato", "Lato")
 ```
 
+Members are connecting from **`r n_distinct(IP_address$COUNTRY[!is.na(IP_address$COUNTRY) & !is.na(IP_address$who_region)])` countries**.
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
+#| fig-align: left
+#| out.width: 100%
 
 # Static reporting date
 report_date <- as.Date("2025-08-26")
@@ -86,11 +90,11 @@ ggplotly(map_plot, tooltip = "text") %>%
     margin = list(t = 60, b = 20, l = 20, r = 20),  # Top margin increased for title space
     annotations = list(
       list(
-        text = "<b>User Access by Country</b>",
+        text = "<b>Member Access by Country</b>",
         x = 0, y = 1.12,
         xref = "paper", yref = "paper",
         showarrow = FALSE,
-        font = list(family = "Lato", size = 17, color = "#2F3E46"),
+        font = list(family = "Lato", size = 14, color = "#2F3E46"),
         xanchor = "left"
       ),
       list(
@@ -98,7 +102,7 @@ ggplotly(map_plot, tooltip = "text") %>%
         x = 0, y = 1.05,
         xref = "paper", yref = "paper",
         showarrow = FALSE,
-        font = list(family = "Lato", size = 14, color = "#2F3E46"),
+        font = list(family = "Lato", size = 12, color = "#2F3E46"),
         xanchor = "left"
       )
     ),
@@ -116,19 +120,19 @@ ggplotly(map_plot, tooltip = "text") %>%
   config(displayModeBar = FALSE)
 ```
 
+
 # Regional Representation
 
 ```{r}
-#| fig-align: center
+#| fig-align: left
 #| fig-width: 10
 #| fig-height: 2
 #| warning: false
 #| message: false
 #| echo: false
+#| out.width: 100%
 
-custom_palette <- c("#29af7f", "#212752", "#4595CF", "#7fbde2", "#E9AC3B", "#f0c670")
-
-custom_palette_dark <- c("#171B3D", "#2D6A9A", "#B57F1E")
+custom_palette <- c("#29af7f", "#051D4F", "#019ADE", "#7fbde2", "#F09F33", "#f0c670")
 
 
 region_summary_filtered <- region_summary %>%
@@ -175,7 +179,7 @@ ggplot(region_summary_filtered, aes(x = 1, y = prop_members, fill = who_region))
 ```
 
 ```{r}
-#| fig-align: center
+#| fig-align: left
 #| fig-width: 10
 #| fig-height: 2
 #| warning: false
@@ -225,12 +229,12 @@ ggplot(region_summary_filtered_countries, aes(x = 1, y = prop_countries, fill = 
 
 ```
 
-# Institute Representation
+# Institutional Representation {#int-rep}
 
-Collaboratory members come together from  **XX** unique institutions globally.
+Collaboratory members come together from **50+ unique institutions** globally.
 
 ```{r}
-#| fig-align: center
+#| fig-align: left
 #| warning: false
 #| message: false
 #| echo: false
@@ -270,17 +274,17 @@ ggplot(email_counts, aes(x = "", y = n, fill = domain)) +
     plot.subtitle = element_text(size = 10, family = "Lato", face = "italic", color = "#2F3E46"),
     legend.title = element_blank()
   ) +
-  scale_fill_manual(values = c("WHO Members" = "#E9AC3B", "Non-WHO Members" = "#212752")) +
+  scale_fill_manual(values = c("WHO Members" = "#F09F33", "Non-WHO Members" = "#051D4F")) +
   geom_text(
     aes(y = y_position, label = paste0(n, " (", percentage, ")"), hjust = hjust_pos),
     size = 4, color = "white", family = "Lato"
   )
 ```
 
-# Discipline Representation 
+# Discipline Representation {#dis-rep}
 
-Collaboratory members represent  variety of different roles in their daily work, **XX%** are in analytical roles and **XX%** are in decision making roles.
+Collaboratory members span a broad range of disciplines relevant to pandemic and epidemic intelligence. In our current dataset, XX% of members work in analytical roles—such as data science, epidemiology, modeling, or surveillance—and XX% are engaged in decision-making roles, including policy, public health strategy, and operational leadership. Members also bring expertise in related areas like risk communication, health systems, and outbreak response, ensuring a comprehensive representation across the ecosystem of pandemic intelligence.
 
-# Gender Representation
+# Gender Ratio {#gen-ratio}
 
-The Collaboratory gender ratio is currently X% Female, X% Male, X% Other.
+The Collaboratory has a diverse gender profile, with XX% of members identifying as Female, XX% as Male, and XX% as Other or Non-Binary.

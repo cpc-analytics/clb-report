@@ -95,7 +95,7 @@ XX
 :::
 :::
 
-# Community Metrics
+# Community Metrics {#com-met}
 
 ```{r}
 #| warning: false
@@ -321,6 +321,137 @@ community_table %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2f3e46")
 
 ```
+
+# Cross-Community Connectivity {#cross-com}
+
+```{r}
+#| fig-align: left
+#| warning: false
+#| message: false
+#| echo: false
+community_mem_table %>%
+  kbl(
+    format = "html",
+    align = c("l", "r", "r"),  # Adjust align to 3 columns
+    escape = FALSE
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = FALSE,
+    font_size = 15,
+    position = "center"
+  ) %>%
+  column_spec(1, width = "19em", bold = TRUE) %>%   # First column wide and bold
+  column_spec(2, width = "12em") %>% 
+  column_spec(3, width = "21em") %>%                 
+  row_spec(0, bold = TRUE, color = "white", background = "#2f3e46")  # Header style
+```
+
+```{r}
+#| fig-align: left
+#| fig-width: 10
+#| fig-height: 6
+#| warning: false
+#| message: false
+#| echo: false
+cop_groups <- c(
+  "CollaboratorySummit",
+  "Epi-Parameters",
+  "epipipelines",
+  "DTD_data-to-decision",
+  "mpox",
+  "DengueAnalytics",
+  "InfluenzaEpiAA",
+  "IOA",
+  "IPSN",
+  "Surv_Outbreak_Tools",
+  "EIOS_Community",
+  "PEIInnovationForum"
+)
+
+# Named vector for display names
+cop_display_names <- c(
+  "CollaboratorySummit" = "Collaboratory Summit",
+  "Epi-Parameters" = "Epidemiological Parameters",
+  "epipipelines" = "Epidemiological Pipelines",
+  "DTD_data-to-decision" = "Data to Decision",
+  "mpox" = "Mpox Analytics",
+  "DengueAnalytics" = "Dengue and Other Arbovirus Analytics",
+  "InfluenzaEpiAA" = "Influenza Epidemiology and Advanced Analytics",
+  "IOA" = "Integrated Outbreak Analytics",
+  "IPSN" = "International Pathogen Surveillance Network",
+  "Surv_Outbreak_Tools" = "Surveillance and Outbreak Response Tools",
+  "EIOS_Community" = "Epidemic Intelligence from Open Sources",
+  "PEIInnovationForum" = "PEI Innovation Forum"
+)
+
+# ---- Prepare and filter group data ----
+data1_groups <- data1 %>%
+  select(id, group_names) %>%
+  mutate(groups = str_split(group_names, ";")) %>%
+  unnest(groups) %>%
+  # remove trust_level_* groups and groups not in cop_groups
+  filter(
+    !str_starts(groups, "trust_level_"),
+    groups %in% cop_groups
+  ) %>%
+  distinct(id, groups)
+
+# ---- Compute shared membership edges safely ----
+group_pairs <- data1_groups %>%
+  group_by(id) %>%
+  summarize(
+    group_pairings = if(length(unique(groups)) >= 2) {
+      list(combn(sort(unique(groups)), 2, simplify = FALSE))
+    } else {
+      list(NULL)
+    },
+    .groups = "drop"
+  ) %>%
+  unnest(group_pairings) %>%
+  filter(!is.null(group_pairings)) %>%
+  mutate(
+    from = map_chr(group_pairings, 1),
+    to = map_chr(group_pairings, 2)
+  ) %>%
+  count(from, to, name = "shared_members")
+
+# ---- Compute node sizes ----
+node_sizes <- data1_groups %>%
+  distinct(id, groups) %>%
+  count(groups, name = "member_count")
+
+# ---- Build graph ----
+community_graph <- tbl_graph(edges = group_pairs, directed = FALSE)
+
+community_graph <- community_graph %>%
+  activate(nodes) %>%
+  left_join(node_sizes, by = c("name" = "groups")) %>%
+  mutate(
+    member_count = replace_na(member_count, 1),
+    display_name = coalesce(cop_display_names[name], name)
+  )
+
+
+
+
+# ---- Plot graph ----
+ggraph(community_graph, layout = "fr") + 
+  geom_edge_link(aes(width = shared_members), alpha = 0.4, color = "#051D4F") + 
+  geom_node_point(aes(size = member_count), alpha = 0.8, color = "#F09F33") + 
+  geom_node_text(aes(label = display_name), repel = TRUE, size = 4) + 
+  scale_size_continuous(range = c(3, 10)) + 
+  theme_void() + 
+  labs(size = "Group Size", width = "Shared Members", title = "Interconnections") +
+  theme(
+    plot.title = element_text(size = 18, family = "Lato", color = "#051D4F", face = "bold"),
+    plot.subtitle = element_text(size = 12, face = "italic", family = "Lato", color = "#051D4F"),
+    legend.position = "bottom"
+  )
+
+
+```
+
 
 # !!Community Onboarding
 

@@ -1,6 +1,6 @@
 ---
 subtitle: "`r format(Sys.Date(), '%B %d, %Y')` — WHO Hub for Pandemic and Epidemic Intelligence"
-title: "Welcome to the Collaboratory Analysis Report"
+title: "Collaboratory Analysis Report"
 format: html
 editor: visual
 css: styles.css
@@ -10,14 +10,17 @@ css: styles.css
 #| label: setup
 #| include: false
 # Load setup script
-source(here::here("scripts", "_setup.R"), echo = FALSE)
+library(tidyverse)
 source(here::here("scripts", "load-data.R"), echo = FALSE)
 source(here::here("scripts", "overview.R"), echo = FALSE)
 source(here::here("scripts", "KPIs.R"), echo = FALSE)
 source(here::here("scripts", "KPIs_2.R"), echo = FALSE)
+source(here::here("scripts", "communities.R"), echo = FALSE)
+source(here::here("scripts", "map.R"), echo = FALSE)
+
 ```
 
-This **internal dashboard** serves as the comprehensive resource for monitoring Collaboratory's key performance indicators (KPIs) and operational metrics. Designed to streamline data-driven decision making, it provides real-time tracking of critical KPIs, enabling the Secretariat to assess progress against targets, identify trends, and gain actionable insights into platform growth and performance. All visualizations and statistics are **weekly updated** with the latest data, ensuring that figures can be directly incorporated into presentations, reports, and strategic communications when needed.
+This **internal dashboard** serves as the comprehensive resource for monitoring Collaboratory's key performance indicators (KPIs) and operational metrics. Designed to streamline data-driven decision making, it enables the Secretariat to assess progress against targets, identify trends, and gain actionable insights into platform growth and performance. All visualizations and metrics are **weekly updated** with the latest data, ensuring that figures can be directly incorporated into presentations, reports, and strategic communications when needed.
 
 # Overview
 
@@ -76,23 +79,28 @@ This **internal dashboard** serves as the comprehensive resource for monitoring 
 
 ```{=html}
 <div class="stats-container">
+
+<a href="growth.html#no-member" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
     Number of Members<br>
-    XX
+    `r total_users`
   </div>
+</a>
   
+<a href="communities.html#com-met" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
     Number of<br>
     Communities of Practice<br>
-    XX
+    `r count_cop`
   </div>
 </div>
+</a>
 ```
 
 
-As of  **date**, Collaboratory has a total of **XX** communities of practice and **XX** members connecting from  **XX countries.** Collaboratory members come from  **XX**  different institutions globally. 
+As of **`r current_month_date`**, Collaboratory has a total of **`r count_cop` communities of practice** and **`r total_users` members** connecting from **`r n_distinct(IP_address$COUNTRY[!is.na(IP_address$COUNTRY) & !is.na(IP_address$who_region)])` countries**. Collaboratory members come from **50+ different institutions** globally.
 
-Over the past month,  **X** number of COPs and **X** new members have joined the Collaboratory.
+Over the past month, **`r users_joined_last_month`** new members have joined the Collaboratory.
 
 # Key Performance Indicators
 
@@ -100,53 +108,71 @@ Collaboratory **Key Performance Indicators (KPIs)** provide a standardized frame
 
 ```{=html}
 <div class="stats-grid">
+  
   <a href="engagement_collab.html#active-members" style="text-decoration: none; color: inherit;">
     <div class="stats-box">
-      Active Members<br>
-`r kpi_weekly |> filter(week == max(week)) |> pull(prop_active_90d) * 100 |> round(1)`%
-</div>
+      Active Members<br> active
+      `r sprintf("%.1f", kpi_weekly |> filter(week == max(week)) |> pull(prop_active_90d) * 100)` %
+    </div>
   </a>
-
-  <div class="stats-box">
-    Geographic Representation<br>
-    XX
-  </div>
-
   
-  <div class="stats-box">
-    Institute Representation<br>
-    XX
+  <a href="growth.html#long-ret" style="text-decoration: none; color: inherit;">
+    <div class="stats-box">
+      Longterm Retention<br>
+      `r percentage_retained`% retained
   </div>
+  </a>
   
-  <div class="stats-box">
-    Longterm Retention<br>
-    XX
+  <a href="engagement_collab.html#posting-act" style="text-decoration: none; color: inherit;">
+    <div class="stats-box">
+      Posting Activity<br>
+      XX
   </div>
+  </a>
   
-  <div class="stats-box">
-    Cross Community<br>
-    Connection<br>
-    XX
+  <a href="engagement_collab.html#eng-levels" style="text-decoration: none; color: inherit;">
+    <div class="stats-box">
+      Moderate-High Engagement<br>
+      XX
   </div>
+  </a>
   
-  <div class="stats-box">
-    Moderate-High Engagement<br>
-    XX
+  <a href="communities.html#cross-com" style="text-decoration: none; color: inherit;">
+    <div class="stats-box">
+      Cross-Community<br>
+      Connection<br>
+      `r scales::percent(multi_group_summary$percent_multi_group, accuracy = 0.1)` in multiple communities
   </div>
+  </a>
   
-  <div class="stats-box">
-    Disciplines/Roles<br>
-    XX
-  </div>
-  
-  <div class="stats-box">
-    Posting Activity<br>
-    XX
-  </div>
-  
-  <div class="stats-box">
+  <a href="diversity_reach.html#gen-ratio" style="text-decoration: none; color: inherit;">
+    <div class="stats-box">
     Gender Ratio<br>
     XX
   </div>
+  </a>
+
+  <a href="diversity_reach.html#geo-rep" style="text-decoration: none; color: inherit;">
+    <div class="stats-box">
+      Geographic Representation<br>
+      `r n_distinct(IP_address$COUNTRY[!is.na(IP_address$COUNTRY) & !is.na(IP_address$who_region)])` countries
+  </div>
+  </a>
+  
+  <a href="diversity_reach.html#int-rep" style="text-decoration: none; color: inherit;">
+    <div class="stats-box">
+      Institutional Representation<br>
+      50+ institutions
+  </div>
+  </a>
+  
+  
+  <a href="diversity_reach.html#dis-rep" style="text-decoration: none; color: inherit;">
+    <div class="stats-box">
+      Discipline Representation<br>
+      XX
+  </div>
+  </a>
+  
 </div>
 ```
