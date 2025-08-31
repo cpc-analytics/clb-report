@@ -1,0 +1,58 @@
+---
+title: ""
+editor: visual
+---
+
+In late June, the first Community Pulse survey was circulated with four short questions to understand what is working well on the Collaboratory and where improvements are needed. A total of 49 responses were received: English (41), French (5), and Spanish (3).
+
+# Members Net Promoter Score
+
+Collaboratory has a Net Promoter Score of **X.**
+
+# **Member Satisfaction**
+
+Current member satisfaction levels are: 
+
+-   **Very dissatisfied**: x% 
+
+<!-- -->
+
+-   **Dissatisfied:** x**%** 
+
+<!-- -->
+
+-   **Neutral:** x**%** 
+
+<!-- -->
+
+-   **Satisfied**: x% 
+
+<!-- -->
+
+-   **Very satisfied**: x%
+
+# Collaboratory Value
+
+Members take value from the following areas offered by Collaboratory. The highest value offering of Collaboratory is xxx at x% 
+
+-   **Networking**: x% 
+
+<!-- -->
+
+-   **Collaboration and/or joint analysis:** x**%** 
+
+<!-- -->
+
+-   **Attending events:** x**%** 
+
+<!-- -->
+
+-   **Access to technology, tools and/or data**: x% 
+
+<!-- -->
+
+-   **Knowledge sharing**: x% 
+
+<!-- -->
+
+-   **Interaction with decision makers**: x%

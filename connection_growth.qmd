@@ -1,0 +1,224 @@
+---
+title: ""
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+source(here::here("scripts", "_setup.R"), echo = FALSE)
+source(here::here("scripts", "load-data.R"), echo = FALSE)
+source(here::here("scripts", "overview.R"), echo = FALSE)
+source(here::here("scripts", "map.R"), echo = FALSE)
+source(here::here("scripts", "trends.R"), echo = FALSE)
+source(here::here("scripts", "community_members.R"), echo = FALSE)
+
+library(showtext)
+showtext_auto()  # Enables custom fonts in ggplot2
+
+# Register Lato font
+font_add_google("Lato", "Lato")
+```
+
+# Member Signups
+
+```{r}
+#| fig-align: center
+#| fig-width: 10
+#| fig-height: 4
+#| warning: false
+#| message: false
+#| echo: false
+
+
+ggplot(signups_monthly_filtered, aes(x = Month, y = Total_Signups)) +
+  geom_line(color = "#212752", size = 1) +
+  geom_point(color = "#212752", size = 2) +
+  labs(
+    title = "Monthly User Signups",
+    subtitle = glue::glue("As of {format(report_date, '%d %B %Y')}"),
+    x = "",
+    y = ""
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "2 months") +
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+    axis.text.y = element_text(size = 8),
+    plot.title = element_text(size = 14, family = "Lato", color = "#2F3E46", face = "bold"),
+    plot.subtitle = element_text(size = 12, face = "italic", family = "Lato", color = "#2F3E46"),
+    panel.grid.major.x = element_line(color = "#f0f0f0"),  # light horizontal gridlines
+    panel.grid.major.y = element_line(color = "#f0f0f0"),
+    panel.grid.minor = element_blank()
+  )
+
+signups_monthly_cumulative <- signups_monthly_filtered %>%
+  arrange(Month) %>%
+  mutate(Cumulative_Signups = cumsum(Total_Signups))
+
+ggplot(signups_monthly_cumulative, aes(x = Month, y = Cumulative_Signups)) +
+  geom_line(color = "#212752", size = 1) +
+  geom_point(color = "#212752", size = 2) +
+  labs(
+    title = "Cumulative User Signups",
+    subtitle = glue::glue("As of {format(report_date, '%d %B %Y')}"),
+    x = "",
+    y = ""
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "2 months") +
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+    axis.text.y = element_text(size = 8),
+    plot.title = element_text(size = 14, family = "Lato", color = "#2F3E46", face = "bold"),
+    plot.subtitle = element_text(size = 12, face = "italic", family = "Lato", color = "#2F3E46"),
+    panel.grid.major.x = element_line(color = "#f0f0f0"),
+    panel.grid.major.y = element_line(color = "#f0f0f0"),
+    panel.grid.minor = element_blank()
+  )
+```
+
+# Member Retention
+
+**XX** out of **XX  members,** or **XX%,** are considered long term active members of the Collaboratory, demonstrating stable involvement throughout the past year. The target for this indicator is set as  **≥ 30%.** 
+
+# !!Requests to Connect
+
+There are a total of **XX** of unique requests to connect members with non-members or communities, and vice versa.
+
+# !!Cross-Community Connectivity
+
+**XX**  out of  **XX**  members, **XX%,** are affiliated with more than one community. 
+
+# Members in Multiple Communities
+
+```{r}
+#| fig-align: center
+#| warning: false
+#| message: false
+#| echo: false
+community_mem_table %>%
+  kbl(
+    format = "html",
+    align = c("l", "r", "r"),  # Adjust align to 3 columns
+    escape = FALSE
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = FALSE,
+    font_size = 15,
+    position = "center"
+  ) %>%
+  column_spec(1, width = "19em", bold = TRUE) %>%   # First column wide and bold
+  column_spec(2, width = "12em") %>% 
+  column_spec(3, width = "21em") %>%                 
+  row_spec(0, bold = TRUE, color = "white", background = "#2f3e46")  # Header style
+```
+
+The following map is a place holder – current communities are defined according to the log.
+
+```{r}
+#| fig-align: center
+#| fig-width: 10
+#| fig-height: 6
+#| warning: false
+#| message: false
+#| echo: false
+cop_groups <- c(
+  "CollaboratorySummit",
+  "Epi-Parameters",
+  "epipipelines",
+  "DTD_data-to-decision",
+  "mpox",
+  "DengueAnalytics",
+  "InfluenzaEpiAA",
+  "IOA",
+  "IPSN",
+  "Surv_Outbreak_Tools",
+  "EIOS_Community",
+  "PEIInnovationForum"
+)
+
+# Named vector for display names
+cop_display_names <- c(
+  "CollaboratorySummit" = "Collaboratory Summit",
+  "Epi-Parameters" = "Epidemiological Parameters",
+  "epipipelines" = "Epidemiological Pipelines",
+  "DTD_data-to-decision" = "Data to Decision",
+  "mpox" = "Mpox Analytics",
+  "DengueAnalytics" = "Dengue and Other Arbovirus Analytics",
+  "InfluenzaEpiAA" = "Influenza Epidemiology and Advanced Analytics",
+  "IOA" = "Integrated Outbreak Analytics",
+  "IPSN" = "International Pathogen Surveillance Network",
+  "Surv_Outbreak_Tools" = "Surveillance and Outbreak Response Tools",
+  "EIOS_Community" = "Epidemic Intelligence from Open Sources",
+  "PEIInnovationForum" = "PEI Innovation Forum"
+)
+
+# ---- Prepare and filter group data ----
+data1_groups <- data1 %>%
+  select(id, group_names) %>%
+  mutate(groups = str_split(group_names, ";")) %>%
+  unnest(groups) %>%
+  # remove trust_level_* groups and groups not in cop_groups
+  filter(
+    !str_starts(groups, "trust_level_"),
+    groups %in% cop_groups
+  ) %>%
+  distinct(id, groups)
+
+# ---- Compute shared membership edges safely ----
+group_pairs <- data1_groups %>%
+  group_by(id) %>%
+  summarize(
+    group_pairings = if(length(unique(groups)) >= 2) {
+      list(combn(sort(unique(groups)), 2, simplify = FALSE))
+    } else {
+      list(NULL)
+    },
+    .groups = "drop"
+  ) %>%
+  unnest(group_pairings) %>%
+  filter(!is.null(group_pairings)) %>%
+  mutate(
+    from = map_chr(group_pairings, 1),
+    to = map_chr(group_pairings, 2)
+  ) %>%
+  count(from, to, name = "shared_members")
+
+# ---- Compute node sizes ----
+node_sizes <- data1_groups %>%
+  distinct(id, groups) %>%
+  count(groups, name = "member_count")
+
+# ---- Build graph ----
+community_graph <- tbl_graph(edges = group_pairs, directed = FALSE)
+
+community_graph <- community_graph %>%
+  activate(nodes) %>%
+  left_join(node_sizes, by = c("name" = "groups")) %>%
+  mutate(
+    member_count = replace_na(member_count, 1),
+    display_name = coalesce(cop_display_names[name], name)
+  )
+
+
+
+
+# ---- Plot graph ----
+ggraph(community_graph, layout = "fr") + 
+  geom_edge_link(aes(width = shared_members), alpha = 0.4, color = "#051D4F") + 
+  geom_node_point(aes(size = member_count), alpha = 0.8, color = "#F09F33") + 
+  geom_node_text(aes(label = display_name), repel = TRUE, size = 4) + 
+  scale_size_continuous(range = c(3, 10)) + 
+  theme_void() + 
+  labs(size = "Group Size", width = "Shared Members", title = "Interconnections") +
+  theme(
+    plot.title = element_text(size = 18, family = "Lato", color = "#051D4F", face = "bold"),
+    plot.subtitle = element_text(size = 12, face = "italic", family = "Lato", color = "#051D4F"),
+    legend.position = "bottom"
+  )
+
+
+```

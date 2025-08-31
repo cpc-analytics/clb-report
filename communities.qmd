@@ -1,0 +1,327 @@
+---
+title: ""
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+source(here::here("scripts", "_setup.R"), echo = FALSE)
+source(here::here("scripts", "load-data.R"), echo = FALSE)
+source(here::here("scripts", "overview.R"), echo = FALSE)
+source(here::here("scripts", "engagement-metrics.R"), echo = FALSE)
+source(here::here("scripts", "map.R"), echo = FALSE)
+source(here::here("scripts", "trends.R"), echo = FALSE)
+source(here::here("scripts", "community_members.R"), echo = FALSE)
+
+
+library(showtext)
+showtext_auto()  # Enables custom fonts in ggplot2
+
+# Register Lato font
+font_add_google("Lato", "Lato")
+
+```
+
+```{=html}
+<style>
+/* Box styling (applies to all boxes) */
+.stats-box, .stats-box * {
+  background-color: #4595CF !important;  /* dark blue */
+  color: white !important;                /* white text */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;    /* vertical centering */
+  align-items: center !important;        /* horizontal centering */
+  text-align: center !important;
+  padding: 10px !important;
+  border-radius: 8px !important;
+  width: 250px !important;               /* fixed width */
+  height: 100px !important;              /* fixed height */
+  font-size: 16px !important;
+  flex: none !important;                  /* prevent stretching */
+}
+
+/* Labels and numbers inside the boxes */
+.stats-label {
+  margin-bottom: 5px;
+  font-size: 14px !important;
+}
+.stats-number {
+  font-size: 24px !important;
+}
+
+/* Container for top 2 boxes */
+.stats-container {
+  display: flex;
+  gap: 20px;                 /* space between boxes */
+  justify-content: center;    /* center horizontally */
+  margin-top: 20px;
+  margin-bottom: 40px;        /* space below section */
+}
+
+/* Container for 3x3 grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 250px); /* 3 columns of fixed width */
+  gap: 20px;                               /* spacing between boxes */
+  justify-content: center;                  /* center grid horizontally */
+  margin-top: 20px;
+  margin-bottom: 40px;                     /* space after grid */
+}
+</style>
+```
+::: stats-grid
+::: stats-box
+```         
+Number of Communities
+XX
+```
+:::
+
+::: stats-box
+```         
+Number of Groups
+XX
+```
+:::
+
+::: stats-box
+```         
+Number of Networks
+XX
+```
+:::
+:::
+
+# Community Metrics
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| include: false
+# Define the CoP groups and their corresponding codes
+cop_groups <- c(
+  "CollaboratorySummit",
+  "Epi-Parameters",
+  "epipipelines",
+  "DTD_data-to-decision",
+  "mpox",
+  "DengueAnalytics",
+  "InfluenzaEpiAA",
+  "IOA",
+  "IPSN",
+  "Surv_Outbreak_Tools",
+  "EIOS_Community",
+  "PEIInnovationForum"
+)
+
+# Filter out "discobot" and "system"
+filtered_users <- data1 %>%
+  filter(!(email %in% c("discobot_email", "no_email")))
+
+# Separate multiple groups per user into individual rows
+cop_counts <- filtered_users %>%
+  separate_rows(group_names, sep = ";") %>%  # Split groups into multiple rows
+  filter(group_names %in% cop_groups) %>%  # Keep only CoP groups
+  count(group_names, name = "Member_Count") %>%  # Count members per CoP group
+  arrange(desc(Member_Count))  # Sort by most members
+
+# Select the top 5 CoP communities by membership count
+top_5_cop <- cop_counts %>%
+  top_n(5, wt = Member_Count) %>%
+  arrange(desc(Member_Count))
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+# Create the data frame with proper column names and prevent automatic renaming
+community_table <- data.frame(
+  "Community" = c("PEI Innovation Forum",
+                  "Mpox Analytics", 
+                  "International Pathogen Surveillance Network", 
+                  "Epidemiological Parameters", 
+                  "Epidemiological Pipelines"),
+  
+  "Users" = c(212, 118, 89, 89, 67),
+  "Topics" = c(20, 36, 24, 47, 6),
+  "Posts" = c(31, 123, 120, 155, 23),
+  "Likes" = c(53, 156, 174, 126, 44),
+  
+  check.names = FALSE  # Prevents automatic conversion of spaces to dots
+)
+
+# Format the table to match the styling of metrics_table
+community_table %>%
+  kbl(
+    format = "html",
+    align = c("l", "r", "r", "r", "r"),
+    escape = FALSE
+  ) %>%
+  kable_styling( 
+    bootstrap_options = c("striped", "hover"),
+    full_width = FALSE,
+    font_size = 15,
+    position = "center"
+  ) %>%
+  column_spec(1, width = "20em", bold = TRUE) %>%   # Long community names
+  column_spec(2, width = "8em") %>% # Total Users
+  column_spec(3, width = "8em") %>%                # Topics
+  column_spec(4, width = "8em") %>%                # Posts
+  column_spec(5, width = "8em") %>%                # Likes
+  row_spec(0, bold = TRUE, color = "white", background = "#2f3e46")  # Consistent header
+
+```
+
+# Community Engagement Levels
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| include: false
+# Step 1: Define CoPs of interest
+cop_groups <- c(
+  "CollaboratorySummit", "Epi-Parameters", "epipipelines", "DTD_data-to-decision",
+  "mpox", "DengueAnalytics", "InfluenzaEpiAA", "IOA", "IPSN",
+  "Surv_Outbreak_Tools", "EIOS_Community", "PEIInnovationForum"
+)
+
+# Reusable function: returns engagement group per user
+categorize_time_spent_per_user <- function(data, reference_date) {
+  data %>%
+    mutate(
+      months_active = as.numeric(difftime(reference_date, created_at, units = "days")) / 30,
+      months_active = ifelse(months_active < 1, 1, months_active),
+      time_read_per_month = time_read_min / months_active,
+      engagement_group = case_when(
+        time_read_per_month >= 15 ~ "Highly engaged (15+ min/month)",
+        time_read_per_month >= 2 & time_read_per_month < 15 ~ "Moderately engaged (2-15 min/month)",
+        time_read_per_month < 2 ~ "Barely engaged (under 2 min/month)",
+        TRUE ~ "Unknown"
+      )
+    ) %>%
+    select(id, email, engagement_group)
+}
+
+user_engagement_data1 <- categorize_time_spent_per_user(data1, reference_date)
+
+# Define CoP groups
+cop_groups <- c(
+  "CollaboratorySummit", "Epi-Parameters", "epipipelines", "DTD_data-to-decision",
+  "mpox", "DengueAnalytics", "InfluenzaEpiAA", "IOA", "IPSN",
+  "Surv_Outbreak_Tools", "EIOS_Community", "PEIInnovationForum"
+)
+
+# Prepare CoP membership list
+cop_membership <- data1 %>%
+  filter(!(email %in% c("discobot_email", "no_email"))) %>%
+  separate_rows(group_names, sep = ";") %>%
+  filter(group_names != "", group_names %in% cop_groups) %>%
+  select(id, email, group_names)
+
+# Join with engagement labels
+cop_engagement <- cop_membership %>%
+  left_join(user_engagement_data1, by = c("id", "email")) %>%
+  filter(!is.na(engagement_group))
+
+# Group and calculate percentage breakdowns
+cop_summary <- cop_engagement %>%
+  group_by(group_names, engagement_group) %>%
+  summarise(User_Count = n(), .groups = "drop") %>%
+  group_by(group_names) %>%
+  mutate(
+    Total_Users = sum(User_Count),
+    Percentage = round(100 * User_Count / Total_Users, 1)
+  ) %>%
+  arrange(group_names, desc(engagement_group)) %>%
+  rename(
+    CoP = group_names,
+    Engagement_Level = engagement_group
+  )
+
+# Result
+cop_summary
+
+# Step: Keep only the 3 labeled engagement groups
+cop_summary_filtered <- cop_summary %>%
+  filter(Engagement_Level %in% c(
+    "Highly engaged (15+ min/month)",
+    "Moderately engaged (2-15 min/month)",
+    "Barely engaged (under 2 min/month)"
+  ))
+
+# Step: Pivot wider
+cop_engagement_pivot <- cop_summary_filtered %>%
+  select(CoP, Engagement_Level, Percentage) %>%
+  pivot_wider(
+    names_from = Engagement_Level,
+    values_from = Percentage,
+    values_fill = 0
+  )
+
+# Optional: Clean column names
+colnames(cop_engagement_pivot) <- c(
+  "CoP",
+  "Highly engaged (%)",
+  "Moderately engaged (%)",
+  "Barely engaged (%)"
+)
+
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+# Custom label replacements for display
+cop_display_names <- c(
+  "CollaboratorySummit" = "Collaboratory Summit",
+  "Epi-Parameters" = "Epidemiological Parameters",
+  "epipipelines" = "Epidemiological Pipelines",
+  "DTD_data-to-decision" = "Data to Decision",
+  "mpox" = "Mpox Analytics",
+  "DengueAnalytics" = "Dengue and Other Arbovirus Analytics",
+  "InfluenzaEpiAA" = "Influenza Epidemiology and Advanced Analytics",
+  "IOA" = "Integrated Outbreak Analytics",
+  "IPSN" = "International Pathogen Surveillance Network",
+  "Surv_Outbreak_Tools" = "Surveillance and Outbreak Response Tools",
+  "EIOS_Community" = "Epidemic Intelligence from Open Sources",
+  "PEIInnovationForum" = "PEI Innovation Forum"
+)
+
+# Apply renaming and column title fix
+community_table <- cop_engagement_pivot %>%
+  mutate(CoP = recode(CoP, !!!cop_display_names)) %>%
+  rename(`Communities of Practice` = CoP) %>%
+  arrange(desc(`Highly engaged (%)`))  # Optional: sort again after rename
+
+
+# Then style it
+community_table %>%
+  kbl(
+    format = "html",
+    align = c("l", "r", "r", "r", "r"),
+    escape = FALSE
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = FALSE,
+    font_size = 15,
+    position = "center"
+  ) %>%
+  column_spec(1, width = "16em", bold = TRUE) %>%
+  column_spec(2, width = "12em") %>%
+  column_spec(3, width = "12em") %>%
+  column_spec(4, width = "12em") %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2f3e46")
+
+```
+
+# !!Community Onboarding
+
+There are **X% of communities** with 100% onboarding documentation complete.

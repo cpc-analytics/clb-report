@@ -1,0 +1,28 @@
+project:
+  type: website
+  output-dir: docs   
+
+website:
+  title: ""
+  navbar:
+    logo: data/collab-logo.png
+    left:
+      - href: index.qmd
+        text: Overview
+      - href: diversity_reach.qmd
+        text: Diversity & Reach
+      - href: connection_growth.qmd
+        text: Growth & Connection
+      - href: communities.qmd
+        text: Communities
+      - href: engagement_collab.qmd
+        text: Engagement & Collaboration
+      - href: survey.qmd
+        text: Survey Results
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    toc-location: left

@@ -1,0 +1,286 @@
+---
+title: ""
+format: html
+editor: visual
+---
+
+# Geographic Representation
+
+Members are connecting from **XX countries**.
+
+```{r}
+#| label: setup
+#| include: false
+source(here::here("scripts", "_setup.R"), echo = FALSE)
+source(here::here("scripts", "load-data.R"), echo = FALSE)
+source(here::here("scripts", "overview.R"), echo = FALSE)
+source(here::here("scripts", "map.R"), echo = FALSE)
+
+library(showtext)
+showtext_auto()  # Enables custom fonts in ggplot2
+
+# Register Lato font
+font_add_google("Lato", "Lato")
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+# Static reporting date
+report_date <- as.Date("2025-08-26")
+
+# Categorize user counts into custom bins
+user_points$category <- cut(
+  user_points$user_count,
+  breaks = c(0, 10, 20, 50, Inf),
+  labels = c("1–10", "11–20", "21–50", "51+"),
+  right = TRUE,
+  include.lowest = TRUE
+)
+
+# Custom palette
+custom_colors <- c(
+  "1–10" = "#051D4F",
+  "11–20" = "#019ADE",
+  "21–50" = "#F09F33",
+  "51+"   = "#29af7f"
+)
+
+# Hover text
+user_points$hover_label <- paste0(
+  "<b>", user_points$COUNTRY, "</b><br>",
+  "Users: ", user_points$user_count
+)
+
+# Base ggplot
+map_plot <- ggplot() +
+  geom_sf(data = sfs$adm0, fill = "#F8F9FA", color = "#D0D0D0", linewidth = 0.25) +
+  geom_sf(
+    data = user_points,
+    aes(size = user_count, fill = category, text = hover_label),
+    shape = 21, color = "#2F3E46", alpha = 0.85, stroke = 0.3
+  ) +
+  scale_size_continuous(range = c(3, 15), guide = "none") +
+  scale_fill_manual(values = custom_colors, name = "User Volume", drop = FALSE) +
+  guides(fill = guide_legend(
+    override.aes = list(size = 6),
+    title.position = "top",
+    title.hjust = 0.5
+  )) +
+  theme_void() +
+  theme(
+    legend.position = "bottom",
+    legend.title = element_text(color = "#2F3E46", size = 11, family = "Lato"),
+    legend.text = element_text(color = "#2F3E46", size = 10, family = "Lato"),
+    plot.margin = margin(10, 10, 10, 10),
+    plot.background = element_rect(fill = "white", color = NA),
+    panel.background = element_rect(fill = "white", color = NA)
+  )
+
+# Convert to interactive Plotly with custom title and subtitle
+ggplotly(map_plot, tooltip = "text") %>%
+  layout(
+    autosize = TRUE,
+    margin = list(t = 60, b = 20, l = 20, r = 20),  # Top margin increased for title space
+    annotations = list(
+      list(
+        text = "<b>User Access by Country</b>",
+        x = 0, y = 1.12,
+        xref = "paper", yref = "paper",
+        showarrow = FALSE,
+        font = list(family = "Lato", size = 17, color = "#2F3E46"),
+        xanchor = "left"
+      ),
+      list(
+        text = glue("<i>As of {format(report_date, '%d %B %Y')}</i>"),
+        x = 0, y = 1.05,
+        xref = "paper", yref = "paper",
+        showarrow = FALSE,
+        font = list(family = "Lato", size = 14, color = "#2F3E46"),
+        xanchor = "left"
+      )
+    ),
+    legend = list(
+      orientation = "h",
+      x = 0.5,
+      xanchor = "center",
+      y = -0.25
+    ),
+    xaxis = list(visible = FALSE, fixedrange = TRUE),
+    yaxis = list(visible = FALSE, fixedrange = TRUE),
+    paper_bgcolor = 'rgba(0,0,0,0)',
+    plot_bgcolor = 'rgba(0,0,0,0)'
+  ) %>%
+  config(displayModeBar = FALSE)
+```
+
+# Regional Representation
+
+```{r}
+#| fig-align: center
+#| fig-width: 10
+#| fig-height: 2
+#| warning: false
+#| message: false
+#| echo: false
+
+custom_palette <- c("#29af7f", "#212752", "#4595CF", "#7fbde2", "#E9AC3B", "#f0c670")
+
+custom_palette_dark <- c("#171B3D", "#2D6A9A", "#B57F1E")
+
+
+region_summary_filtered <- region_summary %>%
+  mutate(
+    prop_members = n_members / sum(n_members) * 100,
+    who_region = fct_reorder(who_region, prop_members, .desc = TRUE)
+  )
+
+ggplot(region_summary_filtered, aes(x = 1, y = prop_members, fill = who_region)) +
+  geom_col(width = 0.3, color = "white") +
+  coord_flip() +
+  geom_text(aes(label = paste0(round(prop_members, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 3, color = "white") +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 100), labels = scales::percent_format(scale = 1)) +
+  scale_fill_manual(values = custom_palette) +
+  labs(
+    title = "Member Distribution by Region",
+    subtitle = glue("As of {format(Sys.Date(), '%d %B %Y')}"),
+    x = NULL,
+    y = NULL,
+    fill = ""
+  ) +
+  guides(fill = guide_legend(reverse = TRUE))+
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid.major.x = element_line(color = "#f0f0f0"),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(size = 14, family = "Lato", color = "#2F3E46", face = "bold"),
+    plot.subtitle = element_text(size = 12, family = "Lato", face = "italic", color = "#2F3E46"),
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 10, family = "Lato", face = "bold"),
+    legend.text = element_text(size = 9, family = "Lato"),
+    plot.margin = margin(10, 20, 10, 20)
+  )
+
+
+```
+
+```{r}
+#| fig-align: center
+#| fig-width: 10
+#| fig-height: 2
+#| warning: false
+#| message: false
+#| echo: false
+
+region_summary_filtered_countries <- region_summary %>%
+  mutate(
+    prop_countries = n_countries / sum(n_countries) * 100,
+    # IMPORTANT: Use the same factor order as first plot to keep color and stacking consistent
+    who_region = factor(who_region, levels = levels(region_summary_filtered$who_region))
+  ) 
+
+ggplot(region_summary_filtered_countries, aes(x = 1, y = prop_countries, fill = who_region)) +
+  geom_col(width = 0.3, color = "white") +
+  coord_flip() +
+  geom_text(aes(label = paste0(round(prop_countries, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 3, color = "white") +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 100), labels = scales::percent_format(scale = 1)) +
+  scale_fill_manual(values = custom_palette) +
+  labs(
+    title = "Country Distribution by Region",
+    subtitle = glue("As of {format(Sys.Date(), '%d %B %Y')}"),
+    x = NULL,
+    y = NULL,
+    fill = ""
+  ) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid.major.x = element_line(color = "#f0f0f0"),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(size = 14, family = "Lato", color = "#2F3E46", face = "bold"),
+    plot.subtitle = element_text(size = 12, family = "Lato", face = "italic", color = "#2F3E46"),
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 10, family = "Lato", face = "bold"),
+    legend.text = element_text(size = 9, family = "Lato"),
+    plot.margin = margin(10, 20, 10, 20)
+  )
+
+```
+
+# Institute Representation
+
+Collaboratory members come together from  **XX** unique institutions globally.
+
+```{r}
+#| fig-align: center
+#| warning: false
+#| message: false
+#| echo: false
+
+
+# Static reporting date
+report_date <- as.Date("2025-07-15")
+
+# Recreate filtered_users locally for the pie chart
+filtered_users <- data1 %>%
+  filter(!(email %in% c("discobot_email", "no_email")))
+
+# Count WHO vs Non-WHO members
+email_counts <- filtered_users %>%
+  mutate(domain = ifelse(grepl("@who\\.int$", email), "WHO Members", "Non-WHO Members")) %>%
+  count(domain) %>%
+  mutate(
+    percentage = paste0(round(n / sum(n) * 100, 1), "%"),
+    y_position = cumsum(n) - (n / 2),
+    hjust_pos = ifelse(domain == "WHO Members", -0.8, 1.8)  # WHO right, Non-WHO left
+  )
+
+# Pie chart
+ggplot(email_counts, aes(x = "", y = n, fill = domain)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar(theta = "y") +
+  labs(
+    title = "Proportion of WHO-affiliated Members",
+    subtitle = glue::glue("As of {format(report_date, '%d %B %Y')}")
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    plot.title = element_text(size = 12, family = "Lato", color = "#2F3E46", face = "bold"),
+    plot.subtitle = element_text(size = 10, family = "Lato", face = "italic", color = "#2F3E46"),
+    legend.title = element_blank()
+  ) +
+  scale_fill_manual(values = c("WHO Members" = "#E9AC3B", "Non-WHO Members" = "#212752")) +
+  geom_text(
+    aes(y = y_position, label = paste0(n, " (", percentage, ")"), hjust = hjust_pos),
+    size = 4, color = "white", family = "Lato"
+  )
+```
+
+# Discipline Representation 
+
+Collaboratory members represent  variety of different roles in their daily work, **XX%** are in analytical roles and **XX%** are in decision making roles.
+
+# Gender Representation
+
+The Collaboratory gender ratio is currently X% Female, X% Male, X% Other.
