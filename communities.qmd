@@ -7,6 +7,7 @@ editor: visual
 ```{r}
 #| label: setup
 #| include: false
+#| echo: false
 source(here::here("scripts", "_setup.R"), echo = FALSE)
 source(here::here("scripts", "load-data.R"), echo = FALSE)
 source(here::here("scripts", "overview.R"), echo = FALSE)
@@ -14,6 +15,7 @@ source(here::here("scripts", "engagement-metrics.R"), echo = FALSE)
 source(here::here("scripts", "map.R"), echo = FALSE)
 source(here::here("scripts", "trends.R"), echo = FALSE)
 source(here::here("scripts", "community_members.R"), echo = FALSE)
+source(here::here("scripts", "communities.R"), echo = FALSE)
 
 
 library(showtext)
@@ -28,7 +30,7 @@ font_add_google("Lato", "Lato")
 <style>
 /* Box styling (applies to all boxes) */
 .stats-box, .stats-box * {
-  background-color: #4595CF !important;  /* dark blue */
+  background-color: #019ADE !important;  /* dark blue */
   color: white !important;                /* white text */
   display: flex !important;
   flex-direction: column !important;
@@ -41,6 +43,10 @@ font_add_google("Lato", "Lato")
   height: 100px !important;              /* fixed height */
   font-size: 16px !important;
   flex: none !important;                  /* prevent stretching */
+}
+
+.stats-box {
+  cursor: pointer;
 }
 
 /* Labels and numbers inside the boxes */
@@ -72,82 +78,141 @@ font_add_google("Lato", "Lato")
 }
 </style>
 ```
-::: stats-grid
-::: stats-box
-```         
-Number of Communities
-XX
-```
-:::
 
-::: stats-box
-```         
-Number of Groups
-XX
+```{=html}
+<div class="stats-grid">
+  
+    <div class="stats-box">
+      Number of<br>
+      Communities of Practice<br>
+      `r count_cop`
+    </div>
+    
+    <div class="stats-box">
+      Number of Groups<br>
+      `r count_group`
+  </div>
+  
+    <div class="stats-box">
+      Number of Networks<br>
+      `r count_network`
+  </div>
+  
+  </div>
 ```
-:::
 
-::: stats-box
-```         
-Number of Networks
-XX
-```
-:::
-:::
 
-# Community Metrics {#com-met}
+
+# Community, Group, and Network Sizes {#com-met}
+
+::: panel-tabset
+
+### Communities of Practice
 
 ```{r}
 #| warning: false
 #| message: false
 #| echo: false
-#| include: false
-# Define the CoP groups and their corresponding codes
-cop_groups <- c(
-  "CollaboratorySummit",
-  "Epi-Parameters",
-  "epipipelines",
-  "DTD_data-to-decision",
-  "mpox",
-  "DengueAnalytics",
-  "InfluenzaEpiAA",
-  "IOA",
-  "IPSN",
-  "Surv_Outbreak_Tools",
-  "EIOS_Community",
-  "PEIInnovationForum"
-)
 
-# Filter out "discobot" and "system"
-filtered_users <- data1 %>%
-  filter(!(email %in% c("discobot_email", "no_email")))
+# Display Communities of Practice table
+cop_display_table <- df_cop %>%
+  select(Community = Name, Members) %>%
+  slice_head(n = 15)  # Show top 15 or adjust as needed
 
-# Separate multiple groups per user into individual rows
-cop_counts <- filtered_users %>%
-  separate_rows(group_names, sep = ";") %>%  # Split groups into multiple rows
-  filter(group_names %in% cop_groups) %>%  # Keep only CoP groups
-  count(group_names, name = "Member_Count") %>%  # Count members per CoP group
-  arrange(desc(Member_Count))  # Sort by most members
-
-# Select the top 5 CoP communities by membership count
-top_5_cop <- cop_counts %>%
-  top_n(5, wt = Member_Count) %>%
-  arrange(desc(Member_Count))
+cop_display_table %>%
+  kbl(
+    format = "html",
+    align = c("l", "r"),
+    escape = FALSE
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = FALSE,
+    font_size = 15,
+    position = "center"
+  ) %>%
+  column_spec(1, width = "25em", bold = TRUE) %>%
+  column_spec(2, width = "10em") %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#019ADE")
 ```
+
+### Groups
 
 ```{r}
 #| warning: false
 #| message: false
 #| echo: false
+
+# Display Groups table
+group_display_table <- df_group %>%
+  select(Group = Name, Members) %>%
+  slice_head(n = 15)  # Show top 15 or adjust as needed
+
+group_display_table %>%
+  kbl(
+    format = "html",
+    align = c("l", "r"),
+    escape = FALSE
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = FALSE,
+    font_size = 15,
+    position = "center"
+  ) %>%
+  column_spec(1, width = "25em", bold = TRUE) %>%
+  column_spec(2, width = "10em") %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#019ADE")
+```
+
+### Networks
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+
+# Display Networks table
+network_display_table <- df_network %>%
+  select(Network = Name, Members) %>%
+  slice_head(n = 15)  # Show top 15 or adjust as needed
+
+network_display_table %>%
+  kbl(
+    format = "html",
+    align = c("l", "r"),
+    escape = FALSE
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover"),
+    full_width = FALSE,
+    font_size = 15,
+    position = "center"
+  ) %>%
+  column_spec(1, width = "25em", bold = TRUE) %>%
+  column_spec(2, width = "10em") %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#019ADE")
+```
+
+:::
+
+# Engagement in the Largest Communities of Practice
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+
+
 # Create the data frame with proper column names and prevent automatic renaming
 community_table <- data.frame(
-  "Community" = c("PEI Innovation Forum",
-                  "Mpox Analytics", 
-                  "International Pathogen Surveillance Network", 
-                  "Epidemiological Parameters", 
-                  "Epidemiological Pipelines"),
+  "Community" = c("Mpox Analytics", 
+                  "IPSN - COP WES",
+                   "Epidemiological Parameters", 
+                   "Epidemiological Pipelines",
+                  "AI for Disease Modeling"),
   
-  "Users" = c(212, 118, 89, 89, 67),
+  "Users" = c(121, 101, 95, 70, 61),
   "Topics" = c(20, 36, 24, 47, 6),
   "Posts" = c(31, 123, 120, 155, 23),
   "Likes" = c(53, 156, 174, 126, 44),
@@ -173,104 +238,77 @@ community_table %>%
   column_spec(3, width = "8em") %>%                # Topics
   column_spec(4, width = "8em") %>%                # Posts
   column_spec(5, width = "8em") %>%                # Likes
-  row_spec(0, bold = TRUE, color = "white", background = "#2f3e46")  # Consistent header
+  row_spec(0, bold = TRUE, color = "white", background = "#019ADE")  # Consistent header
 
 ```
 
-# Community Engagement Levels
+
+# Cross-Community Connectivity {#cross-com}
+
+The following table only considers membership in CoPs:
 
 ```{r}
 #| warning: false
 #| message: false
 #| echo: false
 #| include: false
-# Step 1: Define CoPs of interest
-cop_groups <- c(
-  "CollaboratorySummit", "Epi-Parameters", "epipipelines", "DTD_data-to-decision",
-  "mpox", "DengueAnalytics", "InfluenzaEpiAA", "IOA", "IPSN",
-  "Surv_Outbreak_Tools", "EIOS_Community", "PEIInnovationForum"
-)
 
-# Reusable function: returns engagement group per user
-categorize_time_spent_per_user <- function(data, reference_date) {
-  data %>%
-    mutate(
-      months_active = as.numeric(difftime(reference_date, created_at, units = "days")) / 30,
-      months_active = ifelse(months_active < 1, 1, months_active),
-      time_read_per_month = time_read_min / months_active,
-      engagement_group = case_when(
-        time_read_per_month >= 15 ~ "Highly engaged (15+ min/month)",
-        time_read_per_month >= 2 & time_read_per_month < 15 ~ "Moderately engaged (2-15 min/month)",
-        time_read_per_month < 2 ~ "Barely engaged (under 2 min/month)",
-        TRUE ~ "Unknown"
-      )
-    ) %>%
-    select(id, email, engagement_group)
-}
-
-user_engagement_data1 <- categorize_time_spent_per_user(data1, reference_date)
-
-# Define CoP groups
-cop_groups <- c(
-  "CollaboratorySummit", "Epi-Parameters", "epipipelines", "DTD_data-to-decision",
-  "mpox", "DengueAnalytics", "InfluenzaEpiAA", "IOA", "IPSN",
-  "Surv_Outbreak_Tools", "EIOS_Community", "PEIInnovationForum"
-)
-
-# Prepare CoP membership list
-cop_membership <- data1 %>%
+# Get all users first
+all_users <- data1 %>%
   filter(!(email %in% c("discobot_email", "no_email"))) %>%
+  mutate(UserID = row_number()) %>%
+  select(UserID, email)
+
+# Calculate cross-community connectivity for CoPs only
+user_cop_memberships <- data1 %>%
+  filter(!(email %in% c("discobot_email", "no_email"))) %>%
+  mutate(UserID = row_number()) %>%
   separate_rows(group_names, sep = ";") %>%
-  filter(group_names != "", group_names %in% cop_groups) %>%
-  select(id, email, group_names)
+  filter(group_names != "", group_names %in% df_cop$Tags) %>%
+  select(UserID, email, group_names)
 
-# Join with engagement labels
-cop_engagement <- cop_membership %>%
-  left_join(user_engagement_data1, by = c("id", "email")) %>%
-  filter(!is.na(engagement_group))
+# Count number of CoPs per user (including 0 for users not in any CoP)
+user_cop_counts <- user_cop_memberships %>%
+  group_by(UserID, email) %>%
+  summarise(num_cops = n(), .groups = "drop")
 
-# Group and calculate percentage breakdowns
-cop_summary <- cop_engagement %>%
-  group_by(group_names, engagement_group) %>%
-  summarise(User_Count = n(), .groups = "drop") %>%
-  group_by(group_names) %>%
+# Add users with 0 CoP memberships
+all_users_with_counts <- all_users %>%
+  left_join(user_cop_counts, by = c("UserID", "email")) %>%
+  mutate(num_cops = replace_na(num_cops, 0))
+
+# Create connectivity summary with proper ordering
+connectivity_summary <- all_users_with_counts %>%
   mutate(
-    Total_Users = sum(User_Count),
-    Percentage = round(100 * User_Count / Total_Users, 1)
+    membership_category = case_when(
+      num_cops == 0 ~ "0 CoP memberships",
+      num_cops == 1 ~ "1 CoP membership",
+      num_cops == 2 ~ "2 CoP memberships",
+      num_cops == 3 ~ "3 CoP memberships",
+      num_cops >= 4 ~ "4+ CoP memberships"
+    ),
+    order = case_when(
+      num_cops == 0 ~ 1,
+      num_cops == 1 ~ 2,
+      num_cops == 2 ~ 3,
+      num_cops == 3 ~ 4,
+      num_cops >= 4 ~ 5
+    )
   ) %>%
-  arrange(group_names, desc(engagement_group)) %>%
-  rename(
-    CoP = group_names,
-    Engagement_Level = engagement_group
+  group_by(membership_category, order) %>%
+  summarise(
+    `Number of Users` = n(),
+    .groups = "drop"
+  ) %>%
+  arrange(order) %>%
+  mutate(
+    `Percentage of Total Users` = paste0(round(100 * `Number of Users` / sum(`Number of Users`), 1), "%")
+  ) %>%
+  select(
+    `Membership Pattern` = membership_category,
+    `Number of Users`,
+    `Percentage of Total Users`
   )
-
-# Result
-cop_summary
-
-# Step: Keep only the 3 labeled engagement groups
-cop_summary_filtered <- cop_summary %>%
-  filter(Engagement_Level %in% c(
-    "Highly engaged (15+ min/month)",
-    "Moderately engaged (2-15 min/month)",
-    "Barely engaged (under 2 min/month)"
-  ))
-
-# Step: Pivot wider
-cop_engagement_pivot <- cop_summary_filtered %>%
-  select(CoP, Engagement_Level, Percentage) %>%
-  pivot_wider(
-    names_from = Engagement_Level,
-    values_from = Percentage,
-    values_fill = 0
-  )
-
-# Optional: Clean column names
-colnames(cop_engagement_pivot) <- c(
-  "CoP",
-  "Highly engaged (%)",
-  "Moderately engaged (%)",
-  "Barely engaged (%)"
-)
 
 ```
 
@@ -278,34 +316,12 @@ colnames(cop_engagement_pivot) <- c(
 #| warning: false
 #| message: false
 #| echo: false
-# Custom label replacements for display
-cop_display_names <- c(
-  "CollaboratorySummit" = "Collaboratory Summit",
-  "Epi-Parameters" = "Epidemiological Parameters",
-  "epipipelines" = "Epidemiological Pipelines",
-  "DTD_data-to-decision" = "Data to Decision",
-  "mpox" = "Mpox Analytics",
-  "DengueAnalytics" = "Dengue and Other Arbovirus Analytics",
-  "InfluenzaEpiAA" = "Influenza Epidemiology and Advanced Analytics",
-  "IOA" = "Integrated Outbreak Analytics",
-  "IPSN" = "International Pathogen Surveillance Network",
-  "Surv_Outbreak_Tools" = "Surveillance and Outbreak Response Tools",
-  "EIOS_Community" = "Epidemic Intelligence from Open Sources",
-  "PEIInnovationForum" = "PEI Innovation Forum"
-)
 
-# Apply renaming and column title fix
-community_table <- cop_engagement_pivot %>%
-  mutate(CoP = recode(CoP, !!!cop_display_names)) %>%
-  rename(`Communities of Practice` = CoP) %>%
-  arrange(desc(`Highly engaged (%)`))  # Optional: sort again after rename
-
-
-# Then style it
-community_table %>%
+# Display cross-community connectivity table
+connectivity_summary %>%
   kbl(
     format = "html",
-    align = c("l", "r", "r", "r", "r"),
+    align = c("l", "r", "r"),
     escape = FALSE
   ) %>%
   kable_styling(
@@ -314,95 +330,38 @@ community_table %>%
     font_size = 15,
     position = "center"
   ) %>%
-  column_spec(1, width = "16em", bold = TRUE) %>%
+  column_spec(1, width = "19em", bold = TRUE) %>%
   column_spec(2, width = "12em") %>%
-  column_spec(3, width = "12em") %>%
-  column_spec(4, width = "12em") %>%
-  row_spec(0, bold = TRUE, color = "white", background = "#2f3e46")
-
+  column_spec(3, width = "21em") %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#019ADE")
 ```
 
-# Cross-Community Connectivity {#cross-com}
+# Cross-Community Map
 
 ```{r}
-#| fig-align: left
 #| warning: false
 #| message: false
 #| echo: false
-community_mem_table %>%
-  kbl(
-    format = "html",
-    align = c("l", "r", "r"),  # Adjust align to 3 columns
-    escape = FALSE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    font_size = 15,
-    position = "center"
-  ) %>%
-  column_spec(1, width = "19em", bold = TRUE) %>%   # First column wide and bold
-  column_spec(2, width = "12em") %>% 
-  column_spec(3, width = "21em") %>%                 
-  row_spec(0, bold = TRUE, color = "white", background = "#2f3e46")  # Header style
-```
 
-```{r}
-#| fig-align: left
-#| fig-width: 10
-#| fig-height: 6
-#| warning: false
-#| message: false
-#| echo: false
-cop_groups <- c(
-  "CollaboratorySummit",
-  "Epi-Parameters",
-  "epipipelines",
-  "DTD_data-to-decision",
-  "mpox",
-  "DengueAnalytics",
-  "InfluenzaEpiAA",
-  "IOA",
-  "IPSN",
-  "Surv_Outbreak_Tools",
-  "EIOS_Community",
-  "PEIInnovationForum"
-)
+library(tidyverse)
+library(tidygraph)
+library(ggraph)
 
-# Named vector for display names
-cop_display_names <- c(
-  "CollaboratorySummit" = "Collaboratory Summit",
-  "Epi-Parameters" = "Epidemiological Parameters",
-  "epipipelines" = "Epidemiological Pipelines",
-  "DTD_data-to-decision" = "Data to Decision",
-  "mpox" = "Mpox Analytics",
-  "DengueAnalytics" = "Dengue and Other Arbovirus Analytics",
-  "InfluenzaEpiAA" = "Influenza Epidemiology and Advanced Analytics",
-  "IOA" = "Integrated Outbreak Analytics",
-  "IPSN" = "International Pathogen Surveillance Network",
-  "Surv_Outbreak_Tools" = "Surveillance and Outbreak Response Tools",
-  "EIOS_Community" = "Epidemic Intelligence from Open Sources",
-  "PEIInnovationForum" = "PEI Innovation Forum"
-)
-
-# ---- Prepare and filter group data ----
+# ---- Prepare and filter user data ----
 data1_groups <- data1 %>%
+  filter(!(email %in% c("discobot_email", "no_email"))) %>%
+  mutate(id = row_number()) %>%               # create unique ID
   select(id, group_names) %>%
-  mutate(groups = str_split(group_names, ";")) %>%
-  unnest(groups) %>%
-  # remove trust_level_* groups and groups not in cop_groups
-  filter(
-    !str_starts(groups, "trust_level_"),
-    groups %in% cop_groups
-  ) %>%
-  distinct(id, groups)
+  separate_rows(group_names, sep = ";") %>%
+  filter(group_names %in% df_cop$Tags) %>%   # only keep CoP tags
+  distinct(id, group_names)
 
-# ---- Compute shared membership edges safely ----
+# ---- Compute shared membership edges ----
 group_pairs <- data1_groups %>%
   group_by(id) %>%
-  summarize(
-    group_pairings = if(length(unique(groups)) >= 2) {
-      list(combn(sort(unique(groups)), 2, simplify = FALSE))
+  summarise(
+    group_pairings = if(length(unique(group_names)) >= 2) {
+      list(combn(sort(unique(group_names)), 2, simplify = FALSE))
     } else {
       list(NULL)
     },
@@ -417,34 +376,34 @@ group_pairs <- data1_groups %>%
   count(from, to, name = "shared_members")
 
 # ---- Compute node sizes ----
-node_sizes <- data1_groups %>%
-  distinct(id, groups) %>%
-  count(groups, name = "member_count")
+node_sizes <- df_cop %>%
+  select(Tags, Members) %>%
+  rename(name = Tags, member_count = Members)
 
 # ---- Build graph ----
-community_graph <- tbl_graph(edges = group_pairs, directed = FALSE)
-
-community_graph <- community_graph %>%
+community_graph <- tbl_graph(edges = group_pairs, directed = FALSE) %>%
   activate(nodes) %>%
-  left_join(node_sizes, by = c("name" = "groups")) %>%
+  left_join(node_sizes, by = "name") %>%                          # bring in member counts
+  left_join(df_cop %>% select(Tags, Name), by = c("name" = "Tags")) %>%  # bring in display names
   mutate(
     member_count = replace_na(member_count, 1),
-    display_name = coalesce(cop_display_names[name], name)
+    display_name = Name
   )
-
-
-
 
 # ---- Plot graph ----
 ggraph(community_graph, layout = "fr") + 
-  geom_edge_link(aes(width = shared_members), alpha = 0.4, color = "#051D4F") + 
-  geom_node_point(aes(size = member_count), alpha = 0.8, color = "#F09F33") + 
-  geom_node_text(aes(label = display_name), repel = TRUE, size = 4) + 
+  geom_edge_link(aes(edge_width = shared_members), alpha = 0.4, color = "#019ADE") + 
+  geom_node_point(aes(size = member_count), alpha = 0.9, color = "#F09F33") + 
+  geom_node_text(aes(label = display_name), repel = TRUE, size = 4, color = "#051D4F", face = "bold") + 
   scale_size_continuous(range = c(3, 10)) + 
+  scale_edge_width_continuous(name = "Shared Members") +   #fixes the label
   theme_void() + 
-  labs(size = "Group Size", width = "Shared Members", title = "Interconnections") +
+  labs(
+    size = "Group Size", 
+    title = ""
+  ) +
   theme(
-    plot.title = element_text(size = 18, family = "Lato", color = "#051D4F", face = "bold"),
+    plot.title = element_text(size = 14, family = "Lato", face = "bold"),
     plot.subtitle = element_text(size = 12, face = "italic", family = "Lato", color = "#051D4F"),
     legend.position = "bottom"
   )
@@ -452,7 +411,3 @@ ggraph(community_graph, layout = "fr") +
 
 ```
 
-
-# !!Community Onboarding
-
-There are **X% of communities** with 100% onboarding documentation complete.

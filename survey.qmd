@@ -3,56 +3,106 @@ title: ""
 editor: visual
 ---
 
+```{r}
+#| label: setup
+#| include: false
+#| echo: false
+source(here::here("scripts", "_setup.R"), echo = FALSE)
+source(here::here("scripts", "load-data.R"), echo = FALSE)
+source(here::here("scripts", "overview.R"), echo = FALSE)
+source(here::here("scripts", "survey.R"), echo = FALSE)
+
+
+library(showtext)
+showtext_auto()  # Enables custom fonts in ggplot2
+
+# Register Lato font
+font_add_google("Lato", "Lato")
+
+```
+
 In late June, the first Community Pulse survey was circulated with four short questions to understand what is working well on the Collaboratory and where improvements are needed. A total of 49 responses were received: English (41), French (5), and Spanish (3).
 
 # Members Net Promoter Score
 
-Collaboratory has a Net Promoter Score of **X.**
+Collaboratory has a Net Promoter Score of 48: Promoters (56.5), Passives (34.8), Detractors (8.7).
 
 # **Member Satisfaction**
 
 Current member satisfaction levels are: 
 
--   **Very dissatisfied**: x% 
+```{r}
+#| fig-align: left
+#| fig-width: 10
+#| fig-height: 4
+#| warning: false
+#| message: false
+#| echo: false
 
-<!-- -->
 
--   **Dissatisfied:** x**%** 
+ggplot(satisfaction_summary, aes(x = Satisfaction, y = pct)) +
+  geom_bar(stat = "identity", width = 0.6, fill = "#051D4F") +
+  geom_text(aes(label = paste0(round(pct, 1), "%")), 
+            hjust = -0.1, size = 3.5) +  # labels just outside the bar
+  coord_flip() +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), expand = expansion(mult = c(0, 0.1))) +
+  labs(
+    title = "Member Satisfaction",
+    x = "",
+    y = ""
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text.x = element_text(size = 8),
+    axis.text.y = element_text(size = 10),
+    plot.title = element_text(size = 14, family = "Lato", color = "#2F3E46", face = "bold"),
+    plot.subtitle = element_text(size = 12, face = "italic", family = "Lato", color = "#2F3E46"),
+    panel.grid.major.x = element_line(color = "#f0f0f0"),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  )
+```
 
-<!-- -->
-
--   **Neutral:** x**%** 
-
-<!-- -->
-
--   **Satisfied**: x% 
-
-<!-- -->
-
--   **Very satisfied**: x%
 
 # Collaboratory Value
 
-Members take value from the following areas offered by Collaboratory. The highest value offering of Collaboratory is xxx at x% 
+Members take value from the following areas offered by Collaboratory. The highest value offering of Collaboratory is xxx at x%
 
--   **Networking**: x% 
+```{r}
+#| fig-align: left
+#| fig-width: 10
+#| fig-height: 4
+#| warning: false
+#| message: false
+#| echo: false
 
-<!-- -->
+# Plot diverging horizontal bars
+ggplot(survey_summary, aes(x = Question, y = pct_signed, fill = Response)) +
+  geom_bar(stat = "identity", width = 0.6) +
+  coord_flip() +
+  scale_fill_manual(values = custom_palette, name = "") +  # remove legend title
+  scale_y_continuous(labels = function(x) paste0(abs(x), "%"), expand = expansion(mult = c(0.1, 0.1))) +
+  scale_x_discrete(labels = question_labels) +
+  labs(
+    title = "Have the following Collaboratory offerings added value to your work?",
+    x = "",
+    y = ""
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text.x = element_text(size = 8),
+    axis.text.y = element_text(size = 10),
+    plot.title = element_text(size = 14, family = "Lato", color = "#2F3E46", face = "bold"),
+    panel.grid.major.x = element_line(color = "#f0f0f0"),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
 
--   **Collaboration and/or joint analysis:** x**%** 
 
-<!-- -->
 
--   **Attending events:** x**%** 
+```
 
-<!-- -->
 
--   **Access to technology, tools and/or data**: x% 
 
-<!-- -->
-
--   **Knowledge sharing**: x% 
-
-<!-- -->
-
--   **Interaction with decision makers**: x%

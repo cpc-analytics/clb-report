@@ -111,8 +111,8 @@ Collaboratory **Key Performance Indicators (KPIs)** provide a standardized frame
   
   <a href="engagement_collab.html#active-members" style="text-decoration: none; color: inherit;">
     <div class="stats-box">
-      Active Members<br> active
-      `r sprintf("%.1f", kpi_weekly |> filter(week == max(week)) |> pull(prop_active_90d) * 100)` %
+      Active Members<br>
+      `r sprintf("%.1f", kpi_weekly |> filter(week == max(week)) |> pull(prop_active_90d) * 100)` % active
     </div>
   </a>
   
