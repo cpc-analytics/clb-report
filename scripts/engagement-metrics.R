@@ -131,9 +131,9 @@ categorize_activity <- function(data, reference_date) {
     mutate(
       last_seen_date = as.Date(last_seen_at),
       activity_group = case_when(
-        last_seen_date >= reference_date - 30 ~ "Active",
-        last_seen_date >= reference_date - 60 & last_seen_date < reference_date - 30 ~ "Dormant",
-        last_seen_date < reference_date - 60 ~ "Uninterested",
+        last_seen_date >= reference_date - 90 ~ "Active",
+        last_seen_date >= reference_date - 180 & last_seen_date < reference_date - 90 ~ "Dormant",
+        last_seen_date < reference_date - 180 ~ "Uninterested",
         TRUE ~ "Unknown"
       )
     ) %>%

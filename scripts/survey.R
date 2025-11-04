@@ -72,7 +72,8 @@ satisfaction_summary$Satisfaction <- factor(
 # Rename columns 10–15
 colnames(survey_data)[10:15] <- c("Network", "Analysis", "Events", "Access", "Knowledge", "Interaction")
 
-custom_palette <- c("#051D4F", "#019ADE", "#F09F33", "#29af7f")  # Yes, Somewhat, No, I didn't know
+custom_palette <- c("#00205C", "#009ADE", "#F4A81D", "#80BC00")  # Yes, Somewhat, No, I didn't know
+
 
 # Reshape data from wide to long
 survey_long <- survey_data %>%

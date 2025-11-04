@@ -1,6 +1,6 @@
 ---
 subtitle: "`r format(Sys.Date(), '%B %d, %Y')` — WHO Hub for Pandemic and Epidemic Intelligence"
-title: "Collaboratory Analysis Report"
+title: "Collaboratory Report"
 format: html
 editor: visual
 css: styles.css
@@ -20,15 +20,16 @@ source(here::here("scripts", "map.R"), echo = FALSE)
 
 ```
 
-This **internal dashboard** serves as the comprehensive resource for monitoring Collaboratory's key performance indicators (KPIs) and operational metrics. Designed to streamline data-driven decision making, it enables the Secretariat to assess progress against targets, identify trends, and gain actionable insights into platform growth and performance. All visualizations and metrics are **weekly updated** with the latest data, ensuring that figures can be directly incorporated into presentations, reports, and strategic communications when needed.
+This **web-based report** serves as the central resource for monitoring Collaboratory’s key performance indicators (KPIs) and platform metrics. Designed for streamlined, data-driven decision-making, it allows the Secretariat to track progress against targets, identify trends, and extract actionable insights. All metrics are **updated weekly**, and all visualizations are structured for clarity and easy inclusion in presentations, reports, or strategic communications.
 
-# Overview
+### Overview
 
 ```{=html}
 <style>
-/* Box styling (applies to all boxes) */
-.stats-box, .stats-box * {
-  background-color: #019ADE !important;  /* dark blue */
+/* Box styling */
+.stats-box {
+  background-color: #019ADE !important;
+  /* dark blue */
   color: white !important;                /* white text */
   display: flex !important;
   flex-direction: column !important;
@@ -41,138 +42,237 @@ This **internal dashboard** serves as the comprehensive resource for monitoring 
   height: 100px !important;              /* fixed height */
   font-size: 16px !important;
   flex: none !important;                  /* prevent stretching */
-}
-
-.stats-box {
+  box-sizing: border-box;
   cursor: pointer;
 }
 
-/* Labels and numbers inside the boxes */
+/* Labels and numbers */
 .stats-label {
   margin-bottom: 5px;
   font-size: 14px !important;
 }
+
 .stats-number {
   font-size: 24px !important;
 }
 
-/* Container for top 2 boxes */
-.stats-container {
-  display: flex;
-  gap: 20px;                 /* space between boxes */
-  justify-content: center;    /* center horizontally */
-  margin-top: 20px;
-  margin-bottom: 40px;        /* space below section */
+.stats-number-green {
+  color: #39FF14 !important;
 }
 
-/* Container for 3x3 grid */
+/* Containers */
+.stats-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 250px); /* 3 columns of fixed width */
-  gap: 20px;                               /* spacing between boxes */
-  justify-content: center;                  /* center grid horizontally */
+  grid-template-columns: repeat(3, 250px);
+  gap: 20px;
+  justify-content: center;
   margin-top: 20px;
-  margin-bottom: 40px;                     /* space after grid */
+  margin-bottom: 40px;
+}
+
+/* Tooltip styling */
+.stats-term {
+  position: relative;
+  display: inline;
+  cursor: help;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  font-size: inherit !important;  /* THIS IS THE KEY FIX */
+}
+
+/* Tooltip styling */
+.tooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px;
+  width: 250px;
+  background-color: #333;
+  color: #fff !important;
+  text-align: left;
+  border-radius: 6px;
+  font-size: 13px !important;
+  line-height: 1.4;
+  transition: opacity 0.3s;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  pointer-events: none;
+  font-family: 'Lato', sans-serif !important;
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+.stats-term:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
 }
 </style>
+
+
 ```
+
+
+
 
 ```{=html}
 <div class="stats-container">
-
 <a href="growth.html#no-member" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
-    Number of Members<br>
-    `r total_users`
+    <div class="stats-label">Number of Members</div>
+    <div>`r total_users`</div>
   </div>
 </a>
   
 <a href="communities.html#com-met" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
-    Number of<br>
-    Communities of Practice<br>
-    `r count_cop`
+    <div class="stats-label">Number of Networks and CoPs</div>
+    <div>`r count_cop + count_network`</div>
   </div>
-</div>
 </a>
+</div>
 ```
 
 
-As of **`r current_month_date`**, Collaboratory has a total of **`r count_cop` communities of practice** and **`r total_users` members** connecting from **`r n_distinct(IP_address$COUNTRY[!is.na(IP_address$COUNTRY) & !is.na(IP_address$who_region)])` countries**. Collaboratory members come from **50+ different institutions** globally.
+As of **`r current_month_date`**, Collaboratory brings together **`r total_users` members** across **`r count_network` networks** and **`r count_cop` communities of practice**, connecting from **`r n_distinct(IP_address$COUNTRY[!is.na(IP_address$COUNTRY) & !is.na(IP_address$who_region)])` countries** and **300+ institutions** worldwide.
 
-Over the past month, **`r users_joined_last_month`** new members have joined the Collaboratory.
+Over the past month, **`r users_joined_last_month` new members** have joined the platform, contributing to ongoing growth and engagement.
 
-# Key Performance Indicators
+### Key Performance Indicators
 
-Collaboratory **Key Performance Indicators (KPIs)** provide a standardized framework to monitor and evaluate progress. KPIs meeting current targets are shown in green. You can see further trends and breakdowns of each key indicator in the subsequent report sections by clicking on the square and hover over details to view definitions and targets:
+Key Performance Indicators (KPIs) provide a standardized framework to monitor and evaluate progress. Indicators that meet current targets are shown in green. For each KPI, you can explore trends and detailed breakdowns in the subsequent report sections by clicking on the squares and hovering over elements to view definitions and targets. Some indicators are currently unreported, but they are included to highlight areas for future data collection.
 
 ```{=html}
 <div class="stats-grid">
-  
-  <a href="engagement_collab.html#active-members" style="text-decoration: none; color: inherit;">
-    <div class="stats-box">
-      Active Members<br>
-      `r sprintf("%.1f", kpi_weekly |> filter(week == max(week)) |> pull(prop_active_90d) * 100)` % active
+<a href="engagement_collab.html#active-members" style="text-decoration: none; color: inherit;">
+  <div class="stats-box">
+    <div class="stats-label">
+      <span class="stats-term">Active Members
+        <span class="tooltip">Percentage of members who logged in at least once in the past 90 days.</span>
+      </span>
     </div>
-  </a>
-  
-  <a href="growth.html#long-ret" style="text-decoration: none; color: inherit;">
-    <div class="stats-box">
-      Longterm Retention<br>
-      `r percentage_retained`% retained
+    <div>
+      <span class="stats-number-green">
+        `r sprintf("%.0f", kpi_weekly |> filter(week == max(week)) |> pull(prop_active_90d) * 100)`%
+      </span>
+    </div>
   </div>
-  </a>
-  
-  <a href="engagement_collab.html#posting-act" style="text-decoration: none; color: inherit;">
-    <div class="stats-box">
-      Posting Activity<br>
-      XX
-  </div>
-  </a>
-  
-  <a href="engagement_collab.html#eng-levels" style="text-decoration: none; color: inherit;">
-    <div class="stats-box">
-      Moderate-High Engagement<br>
-      XX
-  </div>
-  </a>
-  
-  <a href="communities.html#cross-com" style="text-decoration: none; color: inherit;">
-    <div class="stats-box">
-      Cross-Community<br>
-      Connection<br>
-      `r scales::percent(multi_group_summary$percent_multi_group, accuracy = 0.1)` in multiple communities
-  </div>
-  </a>
-  
-  <a href="diversity_reach.html#gen-ratio" style="text-decoration: none; color: inherit;">
-    <div class="stats-box">
-    Gender Ratio<br>
-    XX
-  </div>
-  </a>
+</a>
 
-  <a href="diversity_reach.html#geo-rep" style="text-decoration: none; color: inherit;">
-    <div class="stats-box">
-      Geographic Representation<br>
-      `r n_distinct(IP_address$COUNTRY[!is.na(IP_address$COUNTRY) & !is.na(IP_address$who_region)])` countries
+<a href="growth.html#long-ret" style="text-decoration: none; color: inherit;">
+  <div class="stats-box">
+    <div class="stats-label">
+      <span class="stats-term">Longterm Retention
+        <span class="tooltip">Percentage of members who logged in at least once every 90 days over the past 12 months.</span>
+      </span>
+    </div>
+    <div>
+      <span class="stats-number-green">31%</span>
+    </div>
   </div>
-  </a>
-  
-  <a href="diversity_reach.html#int-rep" style="text-decoration: none; color: inherit;">
-    <div class="stats-box">
-      Institutional Representation<br>
-      50+ institutions
+</a>
+
+<a href="engagement_collab.html#posting-act" style="text-decoration: none; color: inherit;">
+  <div class="stats-box">
+    <div class="stats-label">
+      <span class="stats-term">Posting Activity
+        <span class="tooltip">Percentage of members who posted at least once in the past month.</span>
+      </span>
+    </div>
+    <div>3%</div>
   </div>
-  </a>
-  
-  
-  <a href="diversity_reach.html#dis-rep" style="text-decoration: none; color: inherit;">
-    <div class="stats-box">
-      Discipline Representation<br>
-      XX
+</a>
+
+<a href="engagement_collab.html#eng-levels" style="text-decoration: none; color: inherit;">
+  <div class="stats-box">
+    <div class="stats-label">
+      <span class="stats-term">Moderate-High Engagement
+        <span class="tooltip">Members showing moderate to high engagement levels on the platform.</span>
+      </span>
+    </div>
+    <div>28%</div>
   </div>
-  </a>
-  
+</a>
+
+<a href="communities.html#cross-com" style="text-decoration: none; color: inherit;">
+  <div class="stats-box">
+    <div class="stats-label">
+      <span class="stats-term">Cross-Community Connection
+        <span class="tooltip">Percentage of members participating in multiple communities.</span>
+      </span>
+    </div>
+    <div>`r scales::percent(multi_group_summary$percent_multi_group, accuracy = 1)`</div>
+  </div>
+</a>
+
+<a href="diversity_reach.html#gen-ratio" style="text-decoration: none; color: inherit;">
+  <div class="stats-box">
+    <div class="stats-label">
+      <span class="stats-term">Gender Distribution
+        <span class="tooltip">Distribution of members by gender. Data currently unreported.</span>
+      </span>
+    </div>
+    <div>XX</div>
+  </div>
+</a>
+
+<a href="diversity_reach.html#geo-rep" style="text-decoration: none; color: inherit;">
+  <div class="stats-box">
+    <div class="stats-label">
+      <span class="stats-term">Geographic Reach
+        <span class="tooltip">Number of countries represented by members.</span>
+      </span>
+    </div>
+    <div>
+      <span class="stats-number-green">`r n_distinct(IP_address$COUNTRY[!is.na(IP_address$COUNTRY) & !is.na(IP_address$who_region)])`</span>
+    </div>
+  </div>
+</a>
+
+<a href="diversity_reach.html#int-rep" style="text-decoration: none; color: inherit;">
+  <div class="stats-box">
+    <div class="stats-label">
+      <span class="stats-term">Institutions
+        <span class="tooltip">Number of institutions represented by members.</span>
+      </span>
+    </div>
+    <div>
+      <span class="stats-number-green">300+</span>
+    </div>
+  </div>
+</a>
+
+<a href="diversity_reach.html#dis-rep" style="text-decoration: none; color: inherit;">
+  <div class="stats-box">
+    <div class="stats-label">
+      <span class="stats-term">Disciplines
+        <span class="tooltip">Distribution of members across disciplines. Data currently unreported.</span>
+      </span>
+    </div>
+    <div>XX</div>
+  </div>
+</a>
 </div>
+
 ```

@@ -10,13 +10,13 @@ website:
       - href: index.qmd
         text: Overview
       - href: growth.qmd
-        text: Growth
+        text: Platform Growth
       - href: diversity_reach.qmd
-        text: Diversity & Reach
-      - href: communities.qmd
-        text: Communities & Connectivity
+        text: Representation
       - href: engagement_collab.qmd
         text: Engagement & Collaboration
+      - href: communities.qmd
+        text: Communities & Connectivity
       - href: survey.qmd
         text: Survey Results
 

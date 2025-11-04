@@ -28,9 +28,10 @@ font_add_google("Lato", "Lato")
 
 ```{=html}
 <style>
-/* Box styling (applies to all boxes) */
-.stats-box, .stats-box * {
-  background-color: #019ADE !important;  /* dark blue */
+/* Box styling */
+.stats-box {
+  background-color: #019ADE !important;
+  /* dark blue */
   color: white !important;                /* white text */
   display: flex !important;
   flex-direction: column !important;
@@ -43,160 +44,246 @@ font_add_google("Lato", "Lato")
   height: 100px !important;              /* fixed height */
   font-size: 16px !important;
   flex: none !important;                  /* prevent stretching */
-}
-
-.stats-box {
+  box-sizing: border-box;
   cursor: pointer;
 }
 
-/* Labels and numbers inside the boxes */
+/* Labels and numbers */
 .stats-label {
   margin-bottom: 5px;
   font-size: 14px !important;
 }
+
 .stats-number {
   font-size: 24px !important;
 }
 
-/* Container for top 2 boxes */
+.stats-number-green {
+  color: #39FF14 !important;
+}
+
+/* Containers */
 .stats-container {
   display: flex;
-  gap: 20px;                 /* space between boxes */
-  justify-content: center;    /* center horizontally */
+  gap: 20px;
+  justify-content: center;
   margin-top: 20px;
-  margin-bottom: 40px;        /* space below section */
+  margin-bottom: 40px;
 }
 
-/* Container for 3x3 grid */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 250px); /* 3 columns of fixed width */
-  gap: 20px;                               /* spacing between boxes */
-  justify-content: center;                  /* center grid horizontally */
+  grid-template-columns: repeat(3, 250px);
+  gap: 20px;
+  justify-content: center;
   margin-top: 20px;
-  margin-bottom: 40px;                     /* space after grid */
+  margin-bottom: 40px;
+}
+
+/* Tooltip styling */
+.stats-term {
+  position: relative;
+  display: inline;
+  cursor: help;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  font-size: inherit !important;  /* THIS IS THE KEY FIX */
+}
+
+/* Tooltip styling */
+.tooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px;
+  width: 250px;
+  background-color: #333;
+  color: #fff !important;
+  text-align: left;
+  border-radius: 6px;
+  font-size: 13px !important;
+  line-height: 1.4;
+  transition: opacity 0.3s;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  pointer-events: none;
+  font-family: 'Lato', sans-serif !important;
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+.stats-term:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
 }
 </style>
-```
 
-```{=html}
-<div class="stats-grid">
-  
+  <div class="stats-grid">
     <div class="stats-box">
-      Number of<br>
-      Communities of Practice<br>
+      Number of <span class="stats-term">Networks<span class="tooltip">An established and structured alliance of people and partner organizations who exchange information and collaborate informally across regions and topics.</span></span>
+      `r count_network`
+    </div>
+    
+    <div class="stats-box">
+      Number of
+      <span class="stats-term">Communities of Practice<span class="tooltip">A group of people who regularly engage to share expertise, build capacity, and advance learning around a specific topic.</span></span>
       `r count_cop`
     </div>
     
     <div class="stats-box">
-      Number of Groups<br>
+      Number of <span class="stats-term">Groups<span class="tooltip">A formally designated team with defined objectives.</span></span>
       `r count_group`
-  </div>
+   </div>
+</div>
+```
+### Network, Community of Practice, and Group Sizes {#com-met}
+
+Membership counts are organized as follows: Groups are listed under their parent Network or Communities of Practice (CoP). CoPs that belong to Networks are shown separately and not counted in the Network total. Group members are included in their parent Network or CoP count.
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+
+# Function to create hierarchical dataframe with Display_Name
+create_hierarchical_df <- function(parent_df, child_df, parent_type) {
+  parent_df_display <- parent_df %>%
+    left_join(
+      community_tags %>% select(Tags, Display_Name),
+      by = "Tags"
+    ) %>%
+    mutate(Display_Name = if_else(is.na(Display_Name) | Display_Name == "", Name, Display_Name))
   
-    <div class="stats-box">
-      Number of Networks<br>
-      `r count_network`
-  </div>
+  child_df_display <- child_df %>%
+    left_join(
+      community_tags %>% select(Tags, Display_Name),
+      by = "Tags"
+    ) %>%
+    mutate(Display_Name = if_else(is.na(Display_Name) | Display_Name == "", Name, Display_Name))
   
-  </div>
-```
-
-
-
-# Community, Group, and Network Sizes {#com-met}
-
-::: panel-tabset
-
-### Communities of Practice
-
-```{r}
-#| warning: false
-#| message: false
-#| echo: false
-
-# Display Communities of Practice table
-cop_display_table <- df_cop %>%
-  select(Community = Name, Members) %>%
-  slice_head(n = 15)  # Show top 15 or adjust as needed
-
-cop_display_table %>%
-  kbl(
-    format = "html",
-    align = c("l", "r"),
-    escape = FALSE
+  parent_child_pairs <- parent_df_display %>%
+    select(Tags, Display_Name, Members, Privacy) %>%
+    mutate(Type = parent_type) %>%
+    left_join(
+      child_df_display %>%  
+        filter(!is.na(Parent_Tag) & Parent_Tag != "") %>%
+        select(Parent_Tag, Display_Name, Members, Privacy),
+      by = c("Tags" = "Parent_Tag"),
+      relationship = "one-to-many"
+    ) %>%
+    mutate(
+      row_id = row_number(),
+      has_children = !is.na(Display_Name.y)
+    )
+  
+  result <- bind_rows(
+    # Parent rows
+    parent_child_pairs %>%
+      distinct(Tags, Display_Name.x, Members.x, Privacy.x, Type) %>%
+      transmute(
+        Display_Name = Display_Name.x,
+        Members = Members.x,
+        Privacy = Privacy.x,
+        Parent_Tag = Tags,
+        Sort_Order = Members.x,
+        Is_Parent = TRUE
+      ),
+    # Child rows
+    parent_child_pairs %>%
+      filter(has_children) %>%
+      transmute(
+        Display_Name = paste0("&nbsp;&nbsp;&nbsp;&nbsp;<span style='color: #666;'>↳</span> ", Display_Name.y),
+        Members = Members.y,
+        Privacy = Privacy.y,
+        Parent_Tag = Tags,
+        Sort_Order = Members.x,
+        Is_Parent = FALSE
+      )
   ) %>%
+    arrange(desc(Sort_Order), desc(Is_Parent), desc(Members))
+  
+  return(result)
+}
+
+# Create hierarchical dataframes
+network_hierarchical <- create_hierarchical_df(df_network, df_group, "Network")
+cop_hierarchical <- create_hierarchical_df(df_cop, df_group, "CoP")
+
+# Combine based on max members
+max_network_size <- max(df_network$Members, na.rm = TRUE)
+max_cop_size <- max(df_cop$Members, na.rm = TRUE)
+
+hierarchical_table <- if (max_network_size >= max_cop_size) {
+  bind_rows(network_hierarchical, cop_hierarchical)
+} else {
+  bind_rows(cop_hierarchical, network_hierarchical)
+}
+
+# Identify parent rows
+parent_rows <- which(hierarchical_table$Is_Parent)
+
+# Add subtle Privacy badges
+hierarchical_table <- hierarchical_table %>%
+  mutate(
+    Privacy = case_when(
+      Privacy == "Open" ~ "<span style='background-color: #eaf7ec; color: #2c7a2c; padding: 2px 8px; border-radius: 10px; font-size: 12px; display: inline-block; text-align: center;'>Open</span>",
+      Privacy == "Closed" ~ "<span style='background-color: #faeaea; color: #a33a3a; padding: 2px 8px; border-radius: 10px; font-size: 12px; display: inline-block; text-align: center;'>Closed</span>",
+      TRUE ~ Privacy
+    )
+  ) %>%
+  select(Display_Name, Members, Privacy, Is_Parent)
+
+# Column padding value (matches child indentation)
+column_padding <- "15px"
+
+# Build the table
+kbl(
+  hierarchical_table %>% select(-Is_Parent),
+  format = "html",
+  align = c("l", "r", "r"),  # first column left, others right
+  escape = FALSE,
+  col.names = c("Community", "Members", "Privacy")
+) %>%
   kable_styling(
     bootstrap_options = c("striped", "hover"),
     full_width = FALSE,
     font_size = 15,
-    position = "center"
+    position = "center",
+    fixed_thead = TRUE
   ) %>%
-  column_spec(1, width = "25em", bold = TRUE) %>%
-  column_spec(2, width = "10em") %>%
-  row_spec(0, bold = TRUE, color = "white", background = "#019ADE")
+  # First column: add left padding to align header with data
+  column_spec(1, width = "35em", extra_css = paste0("padding-left: ", column_padding, ";")) %>%
+  # Second and third columns: right-aligned, header aligned with padding
+  column_spec(2, width = "10em", extra_css = paste0("text-align: left; padding-right: ", column_padding, ";")) %>%
+  column_spec(3, width = "10em", extra_css = paste0("text-align: right; ", column_padding, "; font-weight: normal !important;")) %>%
+  # Header row styling (apply same left padding to first column)
+  row_spec(0, bold = TRUE, color = "white", background = "#009ADE", extra_css = paste0("text-align: center; padding-left: ", column_padding, ";")) %>%
+  # Parent rows bold for Community + Members, light background
+  row_spec(parent_rows, background = "#f8f9fa", extra_css = "font-weight: bold;") %>%
+  # Child rows not bold
+  row_spec(setdiff(seq_len(nrow(hierarchical_table)), parent_rows), bold = FALSE)
+
+
+
 ```
 
-### Groups
+### Engagement in the Largest Communities of Practice
 
-```{r}
-#| warning: false
-#| message: false
-#| echo: false
-
-# Display Groups table
-group_display_table <- df_group %>%
-  select(Group = Name, Members) %>%
-  slice_head(n = 15)  # Show top 15 or adjust as needed
-
-group_display_table %>%
-  kbl(
-    format = "html",
-    align = c("l", "r"),
-    escape = FALSE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    font_size = 15,
-    position = "center"
-  ) %>%
-  column_spec(1, width = "25em", bold = TRUE) %>%
-  column_spec(2, width = "10em") %>%
-  row_spec(0, bold = TRUE, color = "white", background = "#019ADE")
-```
-
-### Networks
-
-```{r}
-#| warning: false
-#| message: false
-#| echo: false
-
-# Display Networks table
-network_display_table <- df_network %>%
-  select(Network = Name, Members) %>%
-  slice_head(n = 15)  # Show top 15 or adjust as needed
-
-network_display_table %>%
-  kbl(
-    format = "html",
-    align = c("l", "r"),
-    escape = FALSE
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    font_size = 15,
-    position = "center"
-  ) %>%
-  column_spec(1, width = "25em", bold = TRUE) %>%
-  column_spec(2, width = "10em") %>%
-  row_spec(0, bold = TRUE, color = "white", background = "#019ADE")
-```
-
-:::
-
-# Engagement in the Largest Communities of Practice
+The table below summarizes activity in the five largest Collaboratory communities of practice, including participation and engagement within their subgroups.
 
 ```{r}
 #| warning: false
@@ -207,15 +294,15 @@ network_display_table %>%
 # Create the data frame with proper column names and prevent automatic renaming
 community_table <- data.frame(
   "Community" = c("Mpox Analytics", 
-                  "IPSN - COP WES",
+                  "IPSN Wastewater and Environmental Surveillance",
                    "Epidemiological Parameters", 
-                   "Epidemiological Pipelines",
-                  "AI for Disease Modeling"),
+                   "Influenza Epidemiology and Advanced Analytics",
+                  "Epidemiological Pipelines"),
   
-  "Users" = c(121, 101, 95, 70, 61),
-  "Topics" = c(20, 36, 24, 47, 6),
-  "Posts" = c(31, 123, 120, 155, 23),
-  "Likes" = c(53, 156, 174, 126, 44),
+  "Users" = c(124, 121, 109, 97, 77),
+  "Topics" = c(40, 7, 49, 33, 6),
+  "Posts" = c(137, 75, 158, 59, 158),
+  "Likes" = c(171, 172, 133, 33, 44),
   
   check.names = FALSE  # Prevents automatic conversion of spaces to dots
 )
@@ -233,19 +320,18 @@ community_table %>%
     font_size = 15,
     position = "center"
   ) %>%
-  column_spec(1, width = "20em", bold = TRUE) %>%   # Long community names
+  column_spec(1, width = "25em") %>%   # Long community names
   column_spec(2, width = "8em") %>% # Total Users
   column_spec(3, width = "8em") %>%                # Topics
   column_spec(4, width = "8em") %>%                # Posts
   column_spec(5, width = "8em") %>%                # Likes
-  row_spec(0, bold = TRUE, color = "white", background = "#019ADE")  # Consistent header
+  row_spec(0, bold = TRUE, color = "white", background = "#009ADE")  # Consistent header
 
 ```
 
+### Cross-Community Connectivity {#cross-com}
 
-# Cross-Community Connectivity {#cross-com}
-
-The following table only considers membership in CoPs:
+The following table reflects membership in CoPs only and does not include Networks:
 
 ```{r}
 #| warning: false
@@ -281,11 +367,11 @@ all_users_with_counts <- all_users %>%
 connectivity_summary <- all_users_with_counts %>%
   mutate(
     membership_category = case_when(
-      num_cops == 0 ~ "0 CoP memberships",
-      num_cops == 1 ~ "1 CoP membership",
-      num_cops == 2 ~ "2 CoP memberships",
-      num_cops == 3 ~ "3 CoP memberships",
-      num_cops >= 4 ~ "4+ CoP memberships"
+      num_cops == 0 ~ "None",
+      num_cops == 1 ~ "1 CoP",
+      num_cops == 2 ~ "2 CoPs",
+      num_cops == 3 ~ "3 CoPs",
+      num_cops >= 4 ~ "4+ CoPs"
     ),
     order = case_when(
       num_cops == 0 ~ 1,
@@ -305,7 +391,7 @@ connectivity_summary <- all_users_with_counts %>%
     `Percentage of Total Users` = paste0(round(100 * `Number of Users` / sum(`Number of Users`), 1), "%")
   ) %>%
   select(
-    `Membership Pattern` = membership_category,
+    `Membership` = membership_category,
     `Number of Users`,
     `Percentage of Total Users`
   )
@@ -330,13 +416,13 @@ connectivity_summary %>%
     font_size = 15,
     position = "center"
   ) %>%
-  column_spec(1, width = "19em", bold = TRUE) %>%
-  column_spec(2, width = "12em") %>%
-  column_spec(3, width = "21em") %>%
-  row_spec(0, bold = TRUE, color = "white", background = "#019ADE")
+  column_spec(1, width = "25em") %>%
+  column_spec(2, width = "10em") %>%
+  column_spec(3, width = "25em") %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#009ADE")
 ```
 
-# Cross-Community Map
+### Cross-Community Map
 
 ```{r}
 #| warning: false
@@ -383,31 +469,36 @@ node_sizes <- df_cop %>%
 # ---- Build graph ----
 community_graph <- tbl_graph(edges = group_pairs, directed = FALSE) %>%
   activate(nodes) %>%
-  left_join(node_sizes, by = "name") %>%                          # bring in member counts
-  left_join(df_cop %>% select(Tags, Name), by = c("name" = "Tags")) %>%  # bring in display names
+  left_join(node_sizes, by = "name") %>%  # bring in member counts
+  left_join(community_tags %>% select(Tags, Display_Name), by = c("name" = "Tags")) %>%  # bring in Display_Name from community_tags
   mutate(
     member_count = replace_na(member_count, 1),
-    display_name = Name
-  )
-
-# ---- Plot graph ----
-ggraph(community_graph, layout = "fr") + 
-  geom_edge_link(aes(edge_width = shared_members), alpha = 0.4, color = "#019ADE") + 
-  geom_node_point(aes(size = member_count), alpha = 0.9, color = "#F09F33") + 
-  geom_node_text(aes(label = display_name), repel = TRUE, size = 4, color = "#051D4F", face = "bold") + 
-  scale_size_continuous(range = c(3, 10)) + 
-  scale_edge_width_continuous(name = "Shared Members") +   #fixes the label
-  theme_void() + 
-  labs(
-    size = "Group Size", 
-    title = ""
-  ) +
-  theme(
-    plot.title = element_text(size = 14, family = "Lato", face = "bold"),
-    plot.subtitle = element_text(size = 12, face = "italic", family = "Lato", color = "#051D4F"),
-    legend.position = "bottom"
+    display_name = if_else(is.na(Display_Name) | Display_Name == "", name, Display_Name)  # fallback to tag if Display_Name missing
   )
 
 
 ```
 
+```{r}
+#| fig-height: 10
+#| fig-width: 12
+#| warning: false
+#| message: false
+#| echo: false
+ggraph(community_graph, layout = "fr", niter = 3000, area = vcount(community_graph)^2 * 10) + 
+  geom_edge_link(aes(edge_width = shared_members), alpha = 0.4, color = "#009ADE") + 
+  geom_node_point(aes(size = sqrt(member_count)), alpha = 0.9, color = "#F4A81D") + 
+  geom_node_text(aes(label = display_name), repel = TRUE, size = 4, force = 10, color = "#00205C", fontface = "bold") + 
+  scale_size_continuous(range = c(3, 12), name = "Group Size") + 
+  scale_edge_width_continuous(range = c(0.5, 3), name = "Shared Members") + 
+  theme_void() + 
+  theme(
+    plot.margin = margin(20, 20, 80, 20),   # extra space for stacked legends
+    legend.position = "bottom",
+    legend.justification = "center",
+    legend.box = "vertical",                # stacks the two legends nicely
+    plot.title = element_text(size = 14, family = "Lato", face = "bold"),
+    plot.subtitle = element_text(size = 12, face = "italic", family = "Lato", color = "#00205C")
+  )
+
+```

@@ -21,15 +21,15 @@ font_add_google("Lato", "Lato")
 
 ```
 
-In late June, the first Community Pulse survey was circulated with four short questions to understand what is working well on the Collaboratory and where improvements are needed. A total of 49 responses were received: English (41), French (5), and Spanish (3).
+### Community Pulse Survey
 
-# Members Net Promoter Score
+In late June 2025, the first **Community Pulse Survey** was circulated with four short questions. A total of **49 responses** were received: English (41), French (5), and Spanish (3).
 
-Collaboratory has a Net Promoter Score of 48: Promoters (56.5), Passives (34.8), Detractors (8.7).
+According to the survey, Collaboratory has a **Net Promoter Score of 48**: Promoters (56.5), Passives (34.8), Detractors (8.7). This is the extent to which Collaboratory members would recommend Collaboratory to a peer or colleague, indicating trust in the platform and desire to remain connected.
 
-# **Member Satisfaction**
+### **Member Satisfaction**
 
-Current member satisfaction levels are: 
+Current member satisfaction levels are...
 
 ```{r}
 #| fig-align: left
@@ -41,7 +41,7 @@ Current member satisfaction levels are: 
 
 
 ggplot(satisfaction_summary, aes(x = Satisfaction, y = pct)) +
-  geom_bar(stat = "identity", width = 0.6, fill = "#051D4F") +
+  geom_bar(stat = "identity", width = 0.6, fill = "#00205C") +
   geom_text(aes(label = paste0(round(pct, 1), "%")), 
             hjust = -0.1, size = 3.5) +  # labels just outside the bar
   coord_flip() +
@@ -64,10 +64,9 @@ ggplot(satisfaction_summary, aes(x = Satisfaction, y = pct)) +
   )
 ```
 
+### Collaboratory Value
 
-# Collaboratory Value
-
-Members take value from the following areas offered by Collaboratory. The highest value offering of Collaboratory is xxx at x%
+Members take value from the following areas offered by Collaboratory. The highest value offering of Collaboratory is **attending events (webinars, meetings, workshops, etc) at 89%**.
 
 ```{r}
 #| fig-align: left
@@ -103,6 +102,3 @@ ggplot(survey_summary, aes(x = Question, y = pct_signed, fill = Response)) +
 
 
 ```
-
-
-

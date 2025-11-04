@@ -158,6 +158,10 @@ top_domains <- email_domains %>%
   count(domain, sort = TRUE) %>%
   slice_head(n = 5)
 
+all_unique_domains <- email_domains %>%
+  distinct(domain) %>%
+  arrange(domain) %>%
+  pull(domain)
 
 # ---- Interconnectedness of Members ----
 

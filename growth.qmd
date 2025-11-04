@@ -21,7 +21,9 @@ showtext_auto()  # Enables custom fonts in ggplot2
 font_add_google("Lato", "Lato")
 ```
 
-# Member Growth {#no-member}
+### New Members {#no-member}
+
+Monthly signups show the number of new members joining Collaboratory, reflecting platform growth trends. The cumulative view illustrates total membership over time.
 
 ```{r}
 #| fig-align: left
@@ -33,8 +35,8 @@ font_add_google("Lato", "Lato")
 
 
 ggplot(signups_monthly_filtered, aes(x = Month, y = Total_Signups)) +
-  geom_line(color = "#212752", size = 1) +
-  geom_point(color = "#212752", size = 2) +
+  geom_line(color = "#00205C", size = 1) +
+  geom_point(color = "#00205C", size = 2) +
   labs(
     title = "Monthly Member Signups",
     subtitle = glue::glue("As of {format(report_date, '%d %B %Y')}"),
@@ -58,8 +60,8 @@ signups_monthly_cumulative <- signups_monthly_filtered %>%
   mutate(Cumulative_Signups = cumsum(Total_Signups))
 
 ggplot(signups_monthly_cumulative, aes(x = Month, y = Cumulative_Signups)) +
-  geom_line(color = "#212752", size = 1) +
-  geom_point(color = "#212752", size = 2) +
+  geom_line(color = "#00205C", size = 1) +
+  geom_point(color = "#00205C", size = 2) +
   labs(
     title = "Cumulative Member Signups",
     subtitle = glue::glue("As of {format(report_date, '%d %B %Y')}"),
@@ -79,10 +81,6 @@ ggplot(signups_monthly_cumulative, aes(x = Month, y = Cumulative_Signups)) +
   )
 ```
 
-# Longterm Retention {#long-ret}
+### Longterm Retention {#long-ret}
 
-**`r long_term_retained_members`** out of **`r long_term_total_members` members**, or **`r percentage_retained`**, are considered long term active members of the Collaboratory, demonstrating stable involvement throughout the past year. The target for this indicator is set as **≥ 30%.**
-
-Long-term retention measures the proportion of members who have logged in **at least once every 90 days** within the past 12 months, highlighting consistent and ongoing participation.
-
-
+Long-term retention measures the proportion of members who have logged in at least once every 90 days over the past 12 months, highlighting consistent participation. Currently, **`r long_term_retained_members`** out of **`r long_term_total_members` members** **(`r percentage_retained`)** meet this criterion, exceeding the target of **≥ 30%**.

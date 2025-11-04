@@ -26,9 +26,11 @@ showtext_auto()  # Enables custom fonts in ggplot2
 font_add_google("Lato", "Lato")
 ```
 
-# Active Members {#active-members}
+### Active Members {#active-members}
 
-**XX** out of **XX**  members are active on Collaboratory, which is  **XX%**  of the community. 
+**`r kpi_weekly |> filter(week == max(week)) |> pull(active_90d_count)`** out of **`r kpi_weekly |> filter(week == max(week)) |> pull(total_user_count)`** users were active, which is **`r kpi_weekly |> filter(week == max(week)) |> pull(prop_active_90d) * 100 |> round(1)`%** of the community. The target for this indicator is set as **≥ 30%**.
+
+The proportion of active members reflects users who logged in **at least once within the past 90 days**, based on weekly snapshots. Members who have not logged in during that 90-day window are considered inactive (dormant or uninterested).
 
 ```{r}
 #| fig-align: center
@@ -45,8 +47,8 @@ active_kpi_plot <- kpi_weekly %>%
 
 # Plot
 ggplot(active_kpi_plot, aes(x = week, y = prop_active_90d)) +
-  geom_line(color = "#212752", size = 1) +
-  geom_point(color = "#212752", size = 2) +
+  geom_line(color = "#00205C", size = 1) +
+  geom_point(color = "#00205C", size = 2) +
   labs(
     title = "Active Members",
     subtitle = glue("As of {format(max(active_kpi_plot$week), '%d %B %Y')}"),
@@ -73,9 +75,11 @@ ggplot(active_kpi_plot, aes(x = week, y = prop_active_90d)) +
 
 ```
 
-# Posting Activity {#posting-act}
+### Posting Activity {#posting-act}
 
-Collaboratory members posting at least once per month follows a consistent positive trend.  
+Collaboratory members posting at least once per month follows a consistent positive trend.
+
+Posting activity tracks sustained member interaction with the platform by measuring the proportion of users who post at least once per month through Collaboratory channels.
 
 ```{r}
 #| fig-width: 10
@@ -90,8 +94,8 @@ posting_kpi_plot <- monthly_posters_kpi %>%
 
 # Plot
 ggplot(posting_kpi_plot, aes(x = week, y = prop_active_posters)) +
-  geom_line(color = "#212752", size = 1) +
-  geom_point(color = "#212752", size = 2) +
+  geom_line(color = "#00205C", size = 1) +
+  geom_point(color = "#00205C", size = 2) +
   labs(
     title = "Posting Activity",
     subtitle = glue("As of {format(max(posting_kpi_plot$week), '%d %B %Y')}"),
@@ -116,6 +120,8 @@ ggplot(posting_kpi_plot, aes(x = week, y = prop_active_posters)) +
     panel.grid.minor = element_blank()
   )
 ```
+
+The volume of posts, likes, and topics reflects total community activity over time.
 
 ```{r}
 #| fig-align: center
@@ -146,7 +152,7 @@ ggplot(plot_data, aes(x = Month)) +
   ) +
   scale_x_date(date_labels = "%b %Y", date_breaks = "2 months") +
   scale_color_manual(
-    values = c("Topics" = "#212752", "Posts" = "#4595CF", "Likes" = "#E9AC3B"),
+    values = c("Topics" = "#00205C", "Posts" = "#009ADE", "Likes" = "#F4A81D"),
     breaks = legend_order
   ) +
   theme_minimal(base_size = 10) +
@@ -199,7 +205,7 @@ ggplot(cumulative_data, aes(x = Month)) +
   ) +
   scale_x_date(date_labels = "%b %Y", date_breaks = "2 months") +
   scale_color_manual(
-    values = c("Topics" = "#212752", "Posts" = "#4595CF", "Likes" = "#E9AC3B"),
+    values = c("Topics" = "#00205C", "Posts" = "#009ADE", "Likes" = "#F4A81D"),
     breaks = legend_order
   ) +
   theme_minimal(base_size = 10) +
@@ -216,13 +222,13 @@ ggplot(cumulative_data, aes(x = Month)) +
   )
 ```
 
-# Engagement {#engagement}
+### Engagement {#engagement}
 
 Monthly engagement metrics provide an overview of user activity on the forum. These include total and new user counts, along with averages for user activity.Users are classified by recency of activity:
 
--   **Active**: last seen within 30 days
--   **Dormant**: last seen 31–60 days ago
--   **Uninterested**: last seen more than 60 days ago
+-   **Active**: last seen within 90 days
+-   **Dormant**: last seen 91–180 days ago
+-   **Uninterested**: last seen more than 180 days ago
 
 Engagement intensity is assessed based on the average time a user spends reading per month, normalized by account age, enabling comparison across all users. Based on this measure, users are categorized as:
 
@@ -230,8 +236,11 @@ Engagement intensity is assessed based on the average time a user spends reading
 -   **Moderately Engaged**: between 2 and 15 minutes per month
 -   **Barely Engaged**: less than 2 minutes per month
 
+
+
+
 ::: panel-tabset
-### Engagement Metrics {#engagement-metrics}
+#### Engagement Metrics {#engagement-metrics}
 
 All figures reflect month-over-month changes to support interpretation of longer-term trends. Note that the monthly change for activity and engagement reflects increases or decreases in absolute numbers, and does not indicate changes in their proportional share of the user base.
 
@@ -252,12 +261,12 @@ metrics_table %>%
   column_spec(3, width = "12em") %>%
   column_spec(4, width = "12em", 
               color = dplyr::case_when(
-                grepl("-", metrics_table$`Monthly Change`) ~ "#d33c32",
-                grepl("\\d", metrics_table$`Monthly Change`) ~ "#007e3a",
+                grepl("-", metrics_table$`Monthly Change`) ~ "black",
+                grepl("\\d", metrics_table$`Monthly Change`) ~ "black",
                 TRUE ~ "black"
               )
   )%>%
-  row_spec(0, bold = TRUE, color = "white", background = "#2f3e46")
+  row_spec(0, bold = TRUE, color = "white", background = "#009ADE")
 ```
 
 ```{r}
@@ -283,15 +292,15 @@ activity_table %>%
                 if (is.na(x)) {
                   "black"
                 } else if (grepl("-", x)) {
-                  "#d33c32"
+                  "black"
                 } else if (grepl("\\d", x)) {
-                  "#007e3a"
+                  "black"
                 } else {
                   "black"
                 }
               })
   ) %>%
-  row_spec(0, bold = TRUE, color = "white", background = "#2f3e46")
+  row_spec(0, bold = TRUE, color = "white", background = "#009ADE")
 
 ```
 
@@ -315,15 +324,15 @@ engagement_table %>%
   column_spec(3, width = "12em") %>%
   column_spec(4, width = "12em",
               color = dplyr::case_when(
-                grepl("-", engagement_table$`Monthly Change`) ~ "#d33c32",
-                grepl("\\d", engagement_table$`Monthly Change`) ~ "#007e3a",
+                grepl("-", engagement_table$`Monthly Change`) ~ "black",
+                grepl("\\d", engagement_table$`Monthly Change`) ~ "black",
                 TRUE ~ "black"
               )
   ) %>%
-  row_spec(0, bold = TRUE, color = "white", background = "#2f3e46")
+  row_spec(0, bold = TRUE, color = "white", background = "#009ADE")
 ```
 
-### Engagement Metrics without the Secretariat
+#### Engagement Metrics without the Secretariat
 
 The following tables replicate the previous engagement analysis but exclude users affiliated with the Secretariat. This adjustment allows for a clearer view of engagement patterns among the broader user base, without the influence of highly active administrative accounts.
 
@@ -344,12 +353,12 @@ metrics_table_secret %>%
   column_spec(3, width = "12em") %>%
   column_spec(4, width = "12em", 
               color = dplyr::case_when(
-                grepl("-", metrics_table_secret$`Monthly Change`) ~ "#d33c32",
-                grepl("\\d", metrics_table_secret$`Monthly Change`) ~ "#007e3a",
+                grepl("-", metrics_table_secret$`Monthly Change`) ~ "black",
+                grepl("\\d", metrics_table_secret$`Monthly Change`) ~ "black",
                 TRUE ~ "black"
               )
   )%>%
-  row_spec(0, bold = TRUE, color = "white", background = "#2f3e46")
+  row_spec(0, bold = TRUE, color = "white", background = "#009ADE")
 ```
 
 ```{r}
@@ -375,15 +384,15 @@ activity_table_secret %>%
                 if (is.na(x)) {
                   "black"
                 } else if (grepl("-", x)) {
-                  "#d33c32"
+                  "black"
                 } else if (grepl("\\d", x)) {
-                  "#007e3a"
+                  "black"
                 } else {
                   "black"
                 }
               })
   ) %>%
-  row_spec(0, bold = TRUE, color = "white", background = "#2f3e46")
+  row_spec(0, bold = TRUE, color = "white", background = "#009ADE")
 ```
 
 ```{r}
@@ -407,12 +416,12 @@ engagement_table_secret %>%
   column_spec(3, width = "12em") %>%
   column_spec(4, width = "12em",
               color = dplyr::case_when(
-                grepl("-", engagement_table_secret$`Monthly Change`) ~ "#d33c32",
-                grepl("\\d", engagement_table_secret$`Monthly Change`) ~ "#007e3a",
+                grepl("-", engagement_table_secret$`Monthly Change`) ~ "black",
+                grepl("\\d", engagement_table_secret$`Monthly Change`) ~ "black",
                 TRUE ~ "black"
               )
   ) %>%
-  row_spec(0, bold = TRUE, color = "white", background = "#2f3e46")
+  row_spec(0, bold = TRUE, color = "white", background = "#009ADE")
 
 ```
 
@@ -421,12 +430,10 @@ engagement_table_secret %>%
 </div>
 :::
 
-# Engagement Levels {#eng-levels}
+### Engagement Levels {#eng-levels}
 
 ```{r}
-#| fig-align: center
-#| fig-width: 10
-#| fig-height: 4
+#| fig-align: left
 #| warning: false
 #| message: false
 #| echo: false
@@ -462,110 +469,84 @@ engagement_recent <- engagement_recent %>%
     ))
   )
 
-# Step 4: Line chart
-line_chart <- ggplot(engagement_recent, aes(x = week, y = ratio, color = Category)) +
-  geom_line(size = 1) +
-  geom_point(size = 2) +
-  labs(
-    title = "Engagement Levels – Over Time",
-    subtitle = glue("As of {format(max(engagement_recent$week), '%d %B %Y')}"),
-    x = "", y = ""
-  ) +
-  scale_x_date(
-    date_labels = "%b %Y",
-    date_breaks = "1 month",
-    expand = expansion(add = c(7, 7))
-  ) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  scale_color_manual(
-    values = c(
-      "Barely engaged" = "#212752",
-      "Moderately engaged" = "#4595CF",
-      "Highly engaged" = "#E9AC3B"
-    )
-  ) +
-  theme_minimal(base_size = 10) +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
-    axis.text.y = element_text(size = 8),
-    plot.title = element_text(size = 14, family = "Lato", color = "#2F3E46", face = "bold"),
-    plot.subtitle = element_text(size = 12, face = "italic", family = "Lato", color = "#2F3E46"),
-    legend.position = "bottom",
-    panel.grid.major.x = element_line(color = "#f0f0f0"),
-    panel.grid.major.y = element_line(color = "#f0f0f0"),
-    panel.grid.minor = element_blank()
-  )
 
-# Step 5: Pie chart for latest week
+
+```
+
+
+```{r}
+#| fig-align: left
+#| fig-width: 10
+#| fig-height: 2
+#| warning: false
+#| message: false
+#| echo: false
+#| out.width: 100%
+
+# Step 5: Horizontal stacked bar chart for latest week
 latest_week <- max(engagement_recent$week)
-
 engagement_latest <- engagement_recent %>%
   filter(week == latest_week) %>%
   mutate(
-    label = glue("{Category}\n{scales::percent(ratio, accuracy = 1)}")
+    prop_percent = ratio * 100,
+    Category = factor(Category, levels = c("Highly engaged", "Moderately engaged", "Barely engaged"))
   )
 
-pie_chart <- ggplot(engagement_latest, aes(x = "", y = ratio, fill = Category)) +
-  geom_bar(stat = "identity", width = 1, color = "white") +
-  coord_polar(theta = "y") +
-  labs(title = "Engagement Levels – Latest Week") +
-  theme_void() +
+bar_chart <- ggplot(engagement_latest, aes(x = 1, y = prop_percent, fill = Category)) +
+  geom_col(width = 0.3, color = "white") +
+  coord_flip() +
+  geom_text(aes(label = paste0(round(prop_percent, 1), "%")),
+            position = position_stack(vjust = 0.5), size = 3, color = "white") +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 100), labels = scales::percent_format(scale = 1)) +
   scale_fill_manual(
     values = c(
-   "Barely engaged" = "#212752",
-      "Moderately engaged" = "#4595CF",
-      "Highly engaged" = "#E9AC3B"
+      "Barely engaged" = "#00205C",
+      "Moderately engaged" = "#009ADE",
+      "Highly engaged" = "#F4A81D"
     )
   ) +
-  geom_text(aes(label = label), position = position_stack(vjust = 0.5), size = 2.7, color = "white") +
+  labs(
+    title = "Engagement Levels – Latest Week",
+    subtitle = glue("As of {format(report_date, '%d %B %Y')}"),
+    x = NULL,
+    y = NULL,
+    fill = ""
+  ) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  theme_minimal(base_size = 10) +
   theme(
-  plot.title = element_text(
-    size = 14,
-    face = "bold",
-    hjust = 0.5,
-    family = "Lato",
-    color = "#2F3E46"
-  ),
-  legend.position = "none",
-  plot.margin = margin(5, 5, 5, 5)
-)
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid.major.x = element_line(color = "#f0f0f0"),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(size = 14, family = "Lato", color = "#2F3E46", face = "bold"),
+    plot.subtitle = element_text(size = 12, family = "Lato", face = "italic", color = "#2F3E46"),
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    legend.title = element_text(size = 10, family = "Lato", face = "bold"),
+    legend.text = element_text(size = 9, family = "Lato"),
+    plot.margin = margin(10, 20, 10, 20)
+  )
 
-# Step 6: Show plots side-by-side
-gridExtra::grid.arrange(line_chart, pie_chart, ncol = 2, widths = c(1.2, 0.8))
+bar_chart
 ```
 
-# !!Resource and Tool Sharing 
+### Collaborative Resources and Repositories
 
-\# of uploads (tools and resources)
+Members share resources and tools through the Collaboratory, highlighting collaboration and the exchange of knowledge within the community.
 
-# Repository Metrics
+##### Repository and Resource Metrics
+* Total repositories (all types): 24
+* Repositories linked to communities: 20
+* Number of communities with at least one repository: 8
+* Total uploads (tools and resources): 385
 
-### **Communities with code repositories** 
+##### Repository Engagement
+* Number of collaborators: 34
+* Number of watchers: 72
 
-x% of communities linking to a code repository. 
-
-### Code reutilisation
-
-\# of pull and \# push requests from Communities’ code repositories.
-
-### Collaborators on code 
-
-Tbc: \# of collaborators on code in linked repositories 
-
-### Code contributions 
-
-\# of contributions to existing code in Communities’ code repositories.
-
-# Trust Level Trends 
-
-X% of members that increase their trust levels in the previous 90 days. 
-
-Hover over: trust levels are based on member activities within the Collaboratory discourse platform and signals growing confidence in collaboration .  
-
-Level 1: 
-
-Level 2: 
-
-Level 3:  
-
-# 
+Note: Counts may include overlaps across repositories.
