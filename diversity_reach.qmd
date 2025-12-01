@@ -33,7 +33,7 @@ Members are connecting from **`r n_distinct(IP_address$COUNTRY[!is.na(IP_address
 #| out.width: 100%
 
 # Static reporting date
-report_date <- as.Date("2025-11-03")
+report_date <- as.Date("2025-11-25")
 
 # Categorize user counts into custom bins
 user_points$category <- cut(
@@ -243,7 +243,7 @@ Collaboratory members come from **300+ institutions worldwide**, based on email 
 #| echo: false
 
 # Static reporting date
-report_date <- as.Date("2025-11-03")
+report_date <- as.Date("2025-11-25")
 
 # Recreate filtered_users locally for the bar chart
 filtered_users <- data1 %>%
@@ -297,7 +297,6 @@ ggplot(email_counts, aes(x = 1, y = prop_percent, fill = domain)) +
     plot.margin = margin(10, 20, 10, 20)
   )
 ```
-
 
 ### Disciplines {#dis-rep}
 

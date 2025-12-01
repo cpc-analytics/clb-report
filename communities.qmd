@@ -299,10 +299,10 @@ community_table <- data.frame(
                    "Influenza Epidemiology and Advanced Analytics",
                   "Epidemiological Pipelines"),
   
-  "Users" = c(124, 121, 109, 97, 77),
-  "Topics" = c(40, 7, 49, 33, 6),
-  "Posts" = c(137, 75, 158, 59, 158),
-  "Likes" = c(171, 172, 133, 33, 44),
+  "Users" = c(124, 121, 111, 98, 79),
+  "Topics" = c(41, 7, 49, 33, 6),
+  "Posts" = c(141, 78, 158, 59, 23),
+  "Likes" = c(173, 182, 133, 33, 44),
   
   check.names = FALSE  # Prevents automatic conversion of spaces to dots
 )

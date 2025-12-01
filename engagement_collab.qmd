@@ -537,7 +537,7 @@ bar_chart
 
 ### Collaborative Resources and Repositories
 
-Members share resources and tools through the Collaboratory, highlighting collaboration and the exchange of knowledge within the community.
+Members share resources and tools through Collaboratory, highlighting collaboration and the exchange of knowledge within the community.
 
 ##### Repository and Resource Metrics
 * Total repositories (all types): 24

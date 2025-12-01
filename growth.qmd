@@ -83,4 +83,4 @@ ggplot(signups_monthly_cumulative, aes(x = Month, y = Cumulative_Signups)) +
 
 ### Longterm Retention {#long-ret}
 
-Long-term retention measures the proportion of members who have logged in at least once every 90 days over the past 12 months, highlighting consistent participation. Currently, **`r long_term_retained_members`** out of **`r long_term_total_members` members** **(`r percentage_retained`)** meet this criterion, exceeding the target of **≥ 30%**.
+Longterm retention measures the proportion of members who have logged in at least once every 90 days over the past 12 months, highlighting consistent participation. Currently, **`r long_term_retained_members`** out of **`r long_term_total_members` members** **(`r percentage_retained`)** meet this criterion, exceeding the target of **≥ 30%**.

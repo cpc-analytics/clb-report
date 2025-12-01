@@ -29,7 +29,7 @@ According to the survey, Collaboratory has a **Net Promoter Score of 48**: Promo
 
 ### **Member Satisfaction**
 
-Current member satisfaction levels are...
+Current member satisfaction levels are as follows:
 
 ```{r}
 #| fig-align: left
