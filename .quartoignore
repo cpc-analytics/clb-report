@@ -1,0 +1,8 @@
+# Ignore all raw data & code
+*.R
+*.rds
+*.csv
+*.RData
+*.qmd
+data/       # raw data folder
+scripts/    # any code/scripts folder

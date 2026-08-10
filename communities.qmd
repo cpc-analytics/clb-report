@@ -16,6 +16,7 @@ source(here::here("scripts", "map.R"), echo = FALSE)
 source(here::here("scripts", "trends.R"), echo = FALSE)
 source(here::here("scripts", "community_members.R"), echo = FALSE)
 source(here::here("scripts", "communities.R"), echo = FALSE)
+source(here::here("scripts", "table_theme.R"), echo = FALSE)
 
 
 library(showtext)
@@ -97,7 +98,7 @@ font_add_google("Lato", "Lato")
   visibility: hidden;
   opacity: 0;
   position: absolute;
-  bottom: calc(100% + 5px);
+  top: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
   padding: 12px;
@@ -118,12 +119,12 @@ font_add_google("Lato", "Lato")
 .tooltip::after {
   content: "";
   position: absolute;
-  top: 100%;
+  bottom: 100%;
   left: 50%;
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: #333 transparent transparent transparent;
+  border-color: transparent transparent #333 transparent;
 }
 
 .stats-term:hover .tooltip {
@@ -158,127 +159,110 @@ Membership counts are organized as follows: Groups are listed under their parent
 #| warning: false
 #| message: false
 #| echo: false
-
-# Function to create hierarchical dataframe with Display_Name
+# build the parent/child rows for the table
 create_hierarchical_df <- function(parent_df, child_df, parent_type) {
   parent_df_display <- parent_df %>%
-    left_join(
-      community_tags %>% select(Tags, Display_Name),
-      by = "Tags"
-    ) %>%
+    left_join(community_tags %>% select(Tags, Display_Name), by = "Tags") %>%
     mutate(Display_Name = if_else(is.na(Display_Name) | Display_Name == "", Name, Display_Name))
   
+  # children carry their own type — pull from community_tags
   child_df_display <- child_df %>%
-    left_join(
-      community_tags %>% select(Tags, Display_Name),
-      by = "Tags"
-    ) %>%
+    left_join(community_tags %>% select(Tags, Display_Name, Type.1), by = "Tags") %>%
     mutate(Display_Name = if_else(is.na(Display_Name) | Display_Name == "", Name, Display_Name))
   
   parent_child_pairs <- parent_df_display %>%
     select(Tags, Display_Name, Members, Privacy) %>%
     mutate(Type = parent_type) %>%
     left_join(
-      child_df_display %>%  
+      child_df_display %>%
         filter(!is.na(Parent_Tag) & Parent_Tag != "") %>%
-        select(Parent_Tag, Display_Name, Members, Privacy),
+        select(Parent_Tag, Display_Name, Members, Privacy, Type.1),
       by = c("Tags" = "Parent_Tag"),
       relationship = "one-to-many"
     ) %>%
-    mutate(
-      row_id = row_number(),
-      has_children = !is.na(Display_Name.y)
-    )
+    mutate(has_children = !is.na(Display_Name.y))
   
-  result <- bind_rows(
-    # Parent rows
+  bind_rows(
     parent_child_pairs %>%
       distinct(Tags, Display_Name.x, Members.x, Privacy.x, Type) %>%
       transmute(
         Display_Name = Display_Name.x,
         Members = Members.x,
         Privacy = Privacy.x,
+        Type = Type,
         Parent_Tag = Tags,
         Sort_Order = Members.x,
         Is_Parent = TRUE
       ),
-    # Child rows
     parent_child_pairs %>%
       filter(has_children) %>%
       transmute(
-        Display_Name = paste0("&nbsp;&nbsp;&nbsp;&nbsp;<span style='color: #666;'>↳</span> ", Display_Name.y),
+        Display_Name = indent_child(Display_Name.y),
         Members = Members.y,
         Privacy = Privacy.y,
+        Type = Type.1,
         Parent_Tag = Tags,
         Sort_Order = Members.x,
         Is_Parent = FALSE
       )
   ) %>%
-    arrange(desc(Sort_Order), desc(Is_Parent), desc(Members))
-  
-  return(result)
+    arrange(desc(Sort_Order), Parent_Tag, desc(Is_Parent), desc(Members))
 }
-
-# Create hierarchical dataframes
-network_hierarchical <- create_hierarchical_df(df_network, df_group, "Network")
-cop_hierarchical <- create_hierarchical_df(df_cop, df_group, "CoP")
-
-# Combine based on max members
+df_children <- bind_rows(df_group, df_cop)
+network_hierarchical <- create_hierarchical_df(df_network, df_children, "a-Network")
+df_cop_parents <- df_cop %>% filter(is.na(Parent_Tag) | Parent_Tag == "")
+cop_hierarchical <- create_hierarchical_df(df_cop_parents, df_children, "b-CoP")
+# put whichever group has the largest single community on top
 max_network_size <- max(df_network$Members, na.rm = TRUE)
-max_cop_size <- max(df_cop$Members, na.rm = TRUE)
-
+max_cop_size     <- max(df_cop$Members, na.rm = TRUE)
 hierarchical_table <- if (max_network_size >= max_cop_size) {
   bind_rows(network_hierarchical, cop_hierarchical)
 } else {
   bind_rows(cop_hierarchical, network_hierarchical)
 }
-
-# Identify parent rows
 parent_rows <- which(hierarchical_table$Is_Parent)
-
-# Add subtle Privacy badges
+# short type labels; bold parent names so they survive fmt_markdown
 hierarchical_table <- hierarchical_table %>%
   mutate(
-    Privacy = case_when(
-      Privacy == "Open" ~ "<span style='background-color: #eaf7ec; color: #2c7a2c; padding: 2px 8px; border-radius: 10px; font-size: 12px; display: inline-block; text-align: center;'>Open</span>",
-      Privacy == "Closed" ~ "<span style='background-color: #faeaea; color: #a33a3a; padding: 2px 8px; border-radius: 10px; font-size: 12px; display: inline-block; text-align: center;'>Closed</span>",
-      TRUE ~ Privacy
-    )
+    Type = recode(Type,
+      "a-Network" = "N",
+      "b-CoP"     = "CoP",
+      "c-Group"   = "G"
+    ),
+    Display_Name = if_else(Is_Parent, bold_md(Display_Name), Display_Name)
+  )
+
+hierarchical_table %>%
+  select(Display_Name, Type, Members, Privacy) %>%
+  gt() %>%
+  cols_label(
+    Display_Name = "Name",
+    Type         = "Type",
+    Members      = "Members",
+    Privacy      = "Access"
   ) %>%
-  select(Display_Name, Members, Privacy, Is_Parent)
-
-# Column padding value (matches child indentation)
-column_padding <- "15px"
-
-# Build the table
-kbl(
-  hierarchical_table %>% select(-Is_Parent),
-  format = "html",
-  align = c("l", "r", "r"),  # first column left, others right
-  escape = FALSE,
-  col.names = c("Community", "Members", "Privacy")
-) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover"),
-    full_width = FALSE,
-    font_size = 15,
-    position = "center",
-    fixed_thead = TRUE
+  cols_align(align = "left",   columns = Display_Name) %>%
+  cols_align(align = "center", columns = c(Type, Privacy)) %>%
+  cols_align(align = "right",  columns = Members) %>%
+  cols_width(
+    Display_Name ~ px(440),
+    Type         ~ px(80),
+    Members      ~ px(100),
+    Privacy      ~ px(110)
   ) %>%
-  # First column: add left padding to align header with data
-  column_spec(1, width = "35em", extra_css = paste0("padding-left: ", column_padding, ";")) %>%
-  # Second and third columns: right-aligned, header aligned with padding
-  column_spec(2, width = "10em", extra_css = paste0("text-align: left; padding-right: ", column_padding, ";")) %>%
-  column_spec(3, width = "10em", extra_css = paste0("text-align: right; ", column_padding, "; font-weight: normal !important;")) %>%
-  # Header row styling (apply same left padding to first column)
-  row_spec(0, bold = TRUE, color = "white", background = "#009ADE", extra_css = paste0("text-align: center; padding-left: ", column_padding, ";")) %>%
-  # Parent rows bold for Community + Members, light background
-  row_spec(parent_rows, background = "#f8f9fa", extra_css = "font-weight: bold;") %>%
-  # Child rows not bold
-  row_spec(setdiff(seq_len(nrow(hierarchical_table)), parent_rows), bold = FALSE)
-
-
-
+  fmt_markdown(columns = Display_Name) %>%
+  text_transform(
+    locations = cells_body(columns = Privacy),
+    fn = access_badge
+  ) %>%
+  tab_style(
+    style = list(cell_fill(color = collab_grey), cell_text(weight = "bold")),
+    locations = cells_body(rows = parent_rows)
+  ) %>%
+  tab_source_note(
+    source_note = md("*Type: N = Network, CoP = Community of Practice, G = Group.*")
+  ) %>%
+  collab_gt_theme()
 ```
 
 ### Engagement in the Largest Communities of Practice
@@ -293,16 +277,16 @@ The table below summarizes activity in the five largest Collaboratory communitie
 
 # Create the data frame with proper column names and prevent automatic renaming
 community_table <- data.frame(
-  "Community" = c("Mpox Analytics", 
+  "Community" = c("Epidemiological Parameters",
+                  "Mpox Analytics", 
                   "IPSN Wastewater and Environmental Surveillance",
-                   "Epidemiological Parameters", 
                    "Influenza Epidemiology and Advanced Analytics",
-                  "Epidemiological Pipelines"),
+                  "Ebola Outbreak Analytics"),
   
-  "Users" = c(124, 121, 111, 98, 79),
-  "Topics" = c(41, 7, 49, 33, 6),
-  "Posts" = c(141, 78, 158, 59, 23),
-  "Likes" = c(173, 182, 133, 33, 44),
+  "Users" = c(156, 134, 129, 123, 121),
+  "Topics" = c(50, 43, 8, 33, 6),
+  "Posts" = c(166, 154, 86, 65, 73),
+  "Likes" = c(152, 181, 197, 38, 62),
   
   check.names = FALSE  # Prevents automatic conversion of spaces to dots
 )
@@ -464,13 +448,14 @@ group_pairs <- data1_groups %>%
 # ---- Compute node sizes ----
 node_sizes <- df_cop %>%
   select(Tags, Members) %>%
+  distinct(Tags, .keep_all = TRUE) %>%
   rename(name = Tags, member_count = Members)
 
 # ---- Build graph ----
 community_graph <- tbl_graph(edges = group_pairs, directed = FALSE) %>%
   activate(nodes) %>%
   left_join(node_sizes, by = "name") %>%  # bring in member counts
-  left_join(community_tags %>% select(Tags, Display_Name), by = c("name" = "Tags")) %>%  # bring in Display_Name from community_tags
+left_join(community_tags %>% select(Tags, Display_Name) %>% distinct(Tags, .keep_all = TRUE), by = c("name" = "Tags")) %>% # bring in Display_Name from community_tags
   mutate(
     member_count = replace_na(member_count, 1),
     display_name = if_else(is.na(Display_Name) | Display_Name == "", name, Display_Name)  # fallback to tag if Display_Name missing

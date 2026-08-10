@@ -83,3 +83,22 @@ organization_table <- organization_table %>%
 
 # Append "Other" at the bottom
 organization_table <- bind_rows(organization_table, other_row)
+
+
+
+
+library(dplyr)
+library(openxlsx)
+
+# Create a separate table with all organizations
+all_organization_table <- manual_data %>%
+  count(Organization_m, name = "Users") %>%
+  mutate(
+    Percentage = round((Users / sum(Users)) * 100, 1),
+    `Users (%)` = paste0(Users, " (", Percentage, "%)")
+  ) %>%
+  arrange(desc(Users)) %>%  # sort by user count
+  select(Organization_m, `Users (%)`)
+
+# Write this full table to a separate Excel file
+write.xlsx(all_organization_table, file = "organization_table_all.xlsx")

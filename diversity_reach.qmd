@@ -3,6 +3,7 @@ title: ""
 format:
     html:
       include-in-header: fonts.html
+      self-contained: false
 editor: visual
 ---
 
@@ -33,7 +34,7 @@ Members are connecting from **`r n_distinct(IP_address$COUNTRY[!is.na(IP_address
 #| out.width: 100%
 
 # Static reporting date
-report_date <- as.Date("2025-11-25")
+report_date <- as.Date("2026-07-22")
 
 # Categorize user counts into custom bins
 user_points$category <- cut(
@@ -84,40 +85,15 @@ map_plot <- ggplot() +
   )
 
 # Convert to interactive Plotly with custom title and subtitle
-ggplotly(map_plot, tooltip = "text") %>%
-  layout(
-    autosize = TRUE,
-    margin = list(t = 60, b = 20, l = 20, r = 20),  # Top margin increased for title space
-    annotations = list(
-      list(
-        text = "<b>Member Access by Country</b>",
-        x = 0, y = 1.12,
-        xref = "paper", yref = "paper",
-        showarrow = FALSE,
-        font = list(family = "Lato", size = 14, color = "#2F3E46"),
-        xanchor = "left"
-      ),
-      list(
-        text = glue("<i>As of {format(report_date, '%d %B %Y')}</i>"),
-        x = 0, y = 1.05,
-        xref = "paper", yref = "paper",
-        showarrow = FALSE,
-        font = list(family = "Lato", size = 12, color = "#2F3E46"),
-        xanchor = "left"
-      )
-    ),
-    legend = list(
-      orientation = "h",
-      x = 0.5,
-      xanchor = "center",
-      y = -0.25
-    ),
-    xaxis = list(visible = FALSE, fixedrange = TRUE),
-    yaxis = list(visible = FALSE, fixedrange = TRUE),
-    paper_bgcolor = 'rgba(0,0,0,0)',
-    plot_bgcolor = 'rgba(0,0,0,0)'
-  ) %>%
-  config(displayModeBar = FALSE)
+map_plot +
+  labs(
+    title = "Member Access by Country",
+    subtitle = glue("As of {format(report_date, '%d %B %Y')}")
+  ) +
+  theme(
+    plot.title = element_text(family = "Lato", size = 14, color = "#2F3E46", face = "bold"),
+    plot.subtitle = element_text(family = "Lato", size = 12, color = "#2F3E46", face = "italic")
+  )
 ```
 
 ### Regional Reach
@@ -243,7 +219,7 @@ Collaboratory members come from **300+ institutions worldwide**, based on email 
 #| echo: false
 
 # Static reporting date
-report_date <- as.Date("2025-11-25")
+report_date <- as.Date("2026-07-22")
 
 # Recreate filtered_users locally for the bar chart
 filtered_users <- data1 %>%

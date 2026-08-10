@@ -77,7 +77,7 @@ ggplot(active_kpi_plot, aes(x = week, y = prop_active_90d)) +
 
 ### Posting Activity {#posting-act}
 
-Collaboratory members posting at least once per month follows a consistent positive trend.
+**`r monthly_posters_kpi |> filter(week == max(week)) |> pull(prop_active_posters) * 100 |> round(1)`%** of members posted at least once in the most recent month.
 
 Posting activity tracks sustained member interaction with the platform by measuring the proportion of users who post at least once per month through Collaboratory channels.
 
@@ -107,7 +107,14 @@ ggplot(posting_kpi_plot, aes(x = week, y = prop_active_posters)) +
     date_breaks = "1 month",
     expand = expansion(add = c(7, 7))  # extend left/right padding
   ) +
-  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  scale_y_continuous(
+  labels = scales::percent_format(accuracy = 0.1),
+  limits = c(
+    floor(min(posting_kpi_plot$prop_active_posters) * 1000) / 1000,
+    ceiling(max(posting_kpi_plot$prop_active_posters) * 1000) / 1000
+  ),
+  expand = expansion(mult = c(0.1, 0.15))
+) +
   theme_minimal(base_size = 10) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
@@ -235,9 +242,6 @@ Engagement intensity is assessed based on the average time a user spends reading
 -   **Highly Engaged**: 15 or more minutes per month
 -   **Moderately Engaged**: between 2 and 15 minutes per month
 -   **Barely Engaged**: less than 2 minutes per month
-
-
-
 
 ::: panel-tabset
 #### Engagement Metrics {#engagement-metrics}
@@ -473,7 +477,6 @@ engagement_recent <- engagement_recent %>%
 
 ```
 
-
 ```{r}
 #| fig-align: left
 #| fig-width: 10
@@ -540,13 +543,15 @@ bar_chart
 Members share resources and tools through Collaboratory, highlighting collaboration and the exchange of knowledge within the community.
 
 ##### Repository and Resource Metrics
-* Total repositories (all types): 24
-* Repositories linked to communities: 20
-* Number of communities with at least one repository: 8
-* Total uploads (tools and resources): 385
+
+-   Total repositories (all types): 24
+-   Repositories linked to communities: 20
+-   Number of communities with at least one repository: 8
+-   Total uploads (tools and resources): 385
 
 ##### Repository Engagement
-* Number of collaborators: 34
-* Number of watchers: 72
+
+-   Number of collaborators: 34
+-   Number of watchers: 72
 
 Note: Counts may include overlaps across repositories.

@@ -2,6 +2,7 @@
 
 library(tidyverse)
 library(lubridate)
+library(openxlsx)
 
 data_dir <- "data/."
 files <- list.files(data_dir, pattern = "week-\\d{2}-\\d{2}-\\d{2}", full.names = TRUE)
@@ -162,6 +163,20 @@ all_unique_domains <- email_domains %>%
   distinct(domain) %>%
   arrange(domain) %>%
   pull(domain)
+
+# Prepare domain data with percentages
+domain_percentages <- data1 %>%
+  filter(!is.na(email)) %>%
+  mutate(
+    domain = tolower(str_extract(email, "(?<=@)[^>]+")),
+    domain = str_remove_all(domain, "^mail\\.|^smtp\\.|^webmail\\.")  # clean subdomains
+  ) %>%
+  filter(!str_detect(domain, "@"), domain != "") %>%
+  count(domain, name = "count") %>%
+  mutate(
+    percentage = round((count / sum(count)) * 100, 2)
+  ) %>%
+  arrange(desc(percentage))
 
 # ---- Interconnectedness of Members ----
 

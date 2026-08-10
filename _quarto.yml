@@ -1,11 +1,16 @@
 project:
   type: website
-  output-dir: docs   
+  output-dir: docs  
+  render:
+    - "*.qmd"
+    - "!reports/"
+  resources:
+    - "!data/"
 
 website:
   title: ""
   navbar:
-    logo: data/collab-logo.png
+    logo: assets/collab-logo.png
     left:
       - href: index.qmd
         text: Overview
@@ -19,6 +24,7 @@ website:
         text: Communities & Connectivity
       - href: survey.qmd
         text: Survey Results
+
 
 format:
   html:

@@ -1,0 +1,11 @@
+.Rproj.user/
+.quarto/
+data/
+reports/
+
+/.quarto/
+.RData
+.Rhistory
+.DS_Store
+*.xlsx
+*.rmarkdown

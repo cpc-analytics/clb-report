@@ -60,6 +60,10 @@ This **web-based report** serves as the central resource for monitoring Collabor
   color: #39FF14 !important;
 }
 
+.stats-number-white {
+  color: white !important;
+}
+
 /* Containers */
 .stats-container {
   display: flex;
@@ -130,11 +134,7 @@ This **web-based report** serves as the central resource for monitoring Collabor
 }
 </style>
 
-
 ```
-
-
-
 
 ```{=html}
 <div class="stats-container">
@@ -153,8 +153,6 @@ This **web-based report** serves as the central resource for monitoring Collabor
 </a>
 </div>
 ```
-
-
 As of **`r current_month_date`**, Collaboratory brings together **`r total_users` members** across **`r count_network` networks** and **`r count_cop` communities of practice**, connecting from **`r n_distinct(IP_address$COUNTRY[!is.na(IP_address$COUNTRY) & !is.na(IP_address$who_region)])` countries** and **300+ institutions** worldwide.
 
 Over the past month, **`r users_joined_last_month` new members** have joined the platform, contributing to ongoing growth and engagement.
@@ -173,7 +171,7 @@ Key Performance Indicators (KPIs) provide a standardized framework to monitor an
       </span>
     </div>
     <div>
-      <span class="stats-number-green">
+      <span class="`r ifelse(kpi_weekly |> filter(week == max(week)) |> pull(prop_active_90d) * 100 >= 30, 'stats-number-green', 'stats-number-white')`">
         `r sprintf("%.0f", kpi_weekly |> filter(week == max(week)) |> pull(prop_active_90d) * 100)`%
       </span>
     </div>
@@ -188,7 +186,7 @@ Key Performance Indicators (KPIs) provide a standardized framework to monitor an
       </span>
     </div>
     <div>
-      <span class="stats-number-green">31%</span>
+      23%
     </div>
   </div>
 </a>
@@ -200,7 +198,7 @@ Key Performance Indicators (KPIs) provide a standardized framework to monitor an
         <span class="tooltip">Percentage of members who posted at least once in the past month.</span>
       </span>
     </div>
-    <div>3%</div>
+    <div>2%</div>
   </div>
 </a>
 
@@ -211,7 +209,7 @@ Key Performance Indicators (KPIs) provide a standardized framework to monitor an
         <span class="tooltip">Members showing moderate to high engagement levels on the platform.</span>
       </span>
     </div>
-    <div>28%</div>
+    <div>18%</div>
   </div>
 </a>
 
@@ -222,7 +220,7 @@ Key Performance Indicators (KPIs) provide a standardized framework to monitor an
         <span class="tooltip">Percentage of members participating in multiple communities.</span>
       </span>
     </div>
-    <div>`r scales::percent(multi_group_summary$percent_multi_group, accuracy = 1)`</div>
+    <div>13%</div>
   </div>
 </a>
 
@@ -274,5 +272,4 @@ Key Performance Indicators (KPIs) provide a standardized framework to monitor an
   </div>
 </a>
 </div>
-
 ```
