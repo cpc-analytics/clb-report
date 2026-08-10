@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title></title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./assets/collab-logo.png" alt="" class="navbar-logo">
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html" rel="" target="">
+ <span class="menu-text">Overview</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./growth.html" rel="" target="">
+ <span class="menu-text">Platform Growth</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./diversity_reach.html" rel="" target="">
+ <span class="menu-text">Representation</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./engagement_collab.html" rel="" target="">
+ <span class="menu-text">Engagement &amp; Collaboration</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./communities.html" rel="" target="" aria-current="page">
+ <span class="menu-text">Communities &amp; Connectivity</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./survey.html" rel="" target="">
+ <span class="menu-text">Survey Results</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#com-met" id="toc-com-met" class="nav-link active" data-scroll-target="#com-met">Network, Community of Practice, and Group Sizes</a></li>
+  <li><a href="#engagement-in-the-largest-communities-of-practice" id="toc-engagement-in-the-largest-communities-of-practice" class="nav-link" data-scroll-target="#engagement-in-the-largest-communities-of-practice">Engagement in the Largest Communities of Practice</a></li>
+  <li><a href="#cross-com" id="toc-cross-com" class="nav-link" data-scroll-target="#cross-com">Cross-Community Connectivity</a></li>
+  <li><a href="#cross-community-map" id="toc-cross-community-map" class="nav-link" data-scroll-target="#cross-community-map">Cross-Community Map</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+
+<style>
+/* Box styling */
+.stats-box {
+  background-color: #019ADE !important;  /* dark blue */
+  color: white !important;                /* white text */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;    /* vertical centering */
+  align-items: center !important;        /* horizontal centering */
+  text-align: center !important;
+  padding: 10px !important;
+  border-radius: 8px !important;
+  width: 250px !important;               /* fixed width */
+  height: 100px !important;              /* fixed height */
+  font-size: 16px !important;
+  flex: none !important;                  /* prevent stretching */
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+/* Labels and numbers */
+.stats-label {
+  margin-bottom: 5px;
+  font-size: 14px !important;
+}
+
+.stats-number {
+  font-size: 24px !important;
+}
+
+.stats-number-green {
+  color: #39FF14 !important;
+}
+
+/* Containers */
+.stats-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 250px);
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+/* Tooltip styling */
+.stats-term {
+  position: relative;
+  display: inline;
+  cursor: help;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  font-size: inherit !important;  /* THIS IS THE KEY FIX */
+}
+
+/* Tooltip styling */
+.tooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px;
+  width: 250px;
+  background-color: #333;
+  color: #fff !important;
+  text-align: left;
+  border-radius: 6px;
+  font-size: 13px !important;
+  line-height: 1.4;
+  transition: opacity 0.3s;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  pointer-events: none;
+  font-family: 'Lato', sans-serif !important;
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #333 transparent;
+}
+
+.stats-term:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+</style>
+
+<div class="stats-grid">
+    <div class="stats-box">
+      Number of <span class="stats-term">Networks<span class="tooltip">An established and structured alliance of people and partner organizations who exchange information and collaborate informally across regions and topics.</span></span>
+      2
+    </div>
+
+    <div class="stats-box">
+      Number of
+      <span class="stats-term">Communities of Practice<span class="tooltip">A group of people who regularly engage to share expertise, build capacity, and advance learning around a specific topic.</span></span>
+      22
+    </div>
+
+    <div class="stats-box">
+      Number of <span class="stats-term">Groups<span class="tooltip">A formally designated team with defined objectives.</span></span>
+      18
+   </div>
+</div>
+<section id="com-met" class="level3">
+<h3 class="anchored" data-anchor-id="com-met">Network, Community of Practice, and Group Sizes</h3>
+<p>Membership counts are organized as follows: Groups are listed under their parent Network or Communities of Practice (CoP). CoPs that belong to Networks are shown separately and not counted in the Network total. Group members are included in their parent Network or CoP count.</p>
+<div class="cell">
+<div class="cell-output-display">
+
+<div id="oqhdhqsibu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#oqhdhqsibu table {
+  font-family: 'Lato, sans-serif';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#oqhdhqsibu thead, #oqhdhqsibu tbody, #oqhdhqsibu tfoot, #oqhdhqsibu tr, #oqhdhqsibu td, #oqhdhqsibu th {
+  border-style: none;
+}
+
+#oqhdhqsibu p {
+  margin: 0;
+  padding: 0;
+}
+
+#oqhdhqsibu .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: 0;
+  margin-right: auto;
+  color: #333333;
+  font-size: 15px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#oqhdhqsibu .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#oqhdhqsibu .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#oqhdhqsibu .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#oqhdhqsibu .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#oqhdhqsibu .gt_bottom_border {
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#oqhdhqsibu .gt_col_headings {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#oqhdhqsibu .gt_col_heading {
+  color: #FFFFFF;
+  background-color: #009ADE;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 10px;
+  padding-bottom: 11px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#oqhdhqsibu .gt_column_spanner_outer {
+  color: #FFFFFF;
+  background-color: #009ADE;
+  font-size: 100%;
+  font-weight: bold;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#oqhdhqsibu .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#oqhdhqsibu .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#oqhdhqsibu .gt_column_spanner {
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#oqhdhqsibu .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#oqhdhqsibu .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#oqhdhqsibu .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#oqhdhqsibu .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#oqhdhqsibu .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#oqhdhqsibu .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#oqhdhqsibu .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#oqhdhqsibu .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#oqhdhqsibu .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#oqhdhqsibu .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#oqhdhqsibu .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#oqhdhqsibu .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#oqhdhqsibu .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#oqhdhqsibu .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#oqhdhqsibu .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#oqhdhqsibu .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#oqhdhqsibu .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#oqhdhqsibu .gt_striped {
+  background-color: #F8F9FA;
+}
+
+#oqhdhqsibu .gt_table_body {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #E5E7EB;
+}
+
+#oqhdhqsibu .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#oqhdhqsibu .gt_footnote {
+  margin: 0px;
+  font-size: 13px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#oqhdhqsibu .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#oqhdhqsibu .gt_sourcenote {
+  font-size: 13px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#oqhdhqsibu .gt_left {
+  text-align: left;
+}
+
+#oqhdhqsibu .gt_center {
+  text-align: center;
+}
+
+#oqhdhqsibu .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#oqhdhqsibu .gt_font_normal {
+  font-weight: normal;
+}
+
+#oqhdhqsibu .gt_font_bold {
+  font-weight: bold;
+}
+
+#oqhdhqsibu .gt_font_italic {
+  font-style: italic;
+}
+
+#oqhdhqsibu .gt_super {
+  font-size: 65%;
+}
+
+#oqhdhqsibu .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#oqhdhqsibu .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#oqhdhqsibu .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#oqhdhqsibu .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#oqhdhqsibu .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#oqhdhqsibu .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#oqhdhqsibu .gt_indent_5 {
+  text-indent: 25px;
+}
+
+.gt_table, .gt_table * {
+  font-family: 'Lato', sans-serif !important;
+}
+
+.gt_table tbody tr:hover td {
+  background-color: #eef6fb !important;
+}
+</style>
+<table class="gt_table" style="table-layout: fixed;; width: 0px" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <colgroup>
+    <col style="width:440px;">
+    <col style="width:80px;">
+    <col style="width:100px;">
+    <col style="width:110px;">
+  </colgroup>
+  <thead>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="color: #FFFFFF;" scope="col" id="Name">Name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="color: #FFFFFF;" scope="col" id="Type">Type</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="color: #FFFFFF;" scope="col" id="Members">Members</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" style="color: #FFFFFF;" scope="col" id="Access">Access</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #D9D9D9; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>PEI Innovation Forum </span>"><div class="gt_from_md"><p><span style="font-weight:700;">PEI Innovation Forum </span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #D9D9D9; font-weight: bold;">N</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #D9D9D9; font-weight: bold;">241</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #D9D9D9; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #D9D9D9; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>International Pathogen Surveillance Network (IPSN)&nbsp;</span>"><div class="gt_from_md"><p><span style="font-weight:700;">International Pathogen Surveillance Network (IPSN)&nbsp;</span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #D9D9D9; font-weight: bold;">N</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #D9D9D9; font-weight: bold;">185</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #D9D9D9; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #E6E6E6;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> IPSN Wastewater and Environmental Surveillance"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> IPSN Wastewater and Environmental Surveillance</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #E6E6E6;">CoP</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #E6E6E6;">129</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #E6E6E6;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> IPSN Special Surveillance for Emergency Response"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> IPSN Special Surveillance for Emergency Response</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #F2F2F2;">83</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #E6E6E6;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> IPSN ECHO"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> IPSN ECHO</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #E6E6E6;">CoP</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #E6E6E6;">5</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #E6E6E6;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> IPSN CSUA"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> IPSN CSUA</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #F2F2F2;">4</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> IPSN Catalytic Grant Fund"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> IPSN Catalytic Grant Fund</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #F2F2F2;">4</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #E6E6E6;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> IPSN CoP Data"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> IPSN CoP Data</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6;">CoP</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #E6E6E6;">3</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>Epidemiological Parameters</span>"><div class="gt_from_md"><p><span style="font-weight:700;">Epidemiological Parameters</span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #E6E6E6; font-weight: bold;">157</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> GREP Core Working Group"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> GREP Core Working Group</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #F2F2F2;">16</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> GREP PHAC"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> GREP PHAC</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #F2F2F2;">15</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> GREP Development"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> GREP Development</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #F2F2F2;">7</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> GREP Ebola Virus Disease"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> GREP Ebola Virus Disease</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #F2F2F2;">3</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>Mpox Analytics&nbsp;</span>"><div class="gt_from_md"><p><span style="font-weight:700;">Mpox Analytics&nbsp;</span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #E6E6E6; font-weight: bold;">134</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> Mpox South Africa"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> Mpox South Africa</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #F2F2F2;">18</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>Ebola Outbreak Analytics</span>"><div class="gt_from_md"><p><span style="font-weight:700;">Ebola Outbreak Analytics</span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #E6E6E6; font-weight: bold;">128</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>Influenza Epidemiology and Advanced Analytics </span>"><div class="gt_from_md"><p><span style="font-weight:700;">Influenza Epidemiology and Advanced Analytics </span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #E6E6E6; font-weight: bold;">123</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> Pandemic Influenza Severity Assessment"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> Pandemic Influenza Severity Assessment</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #F2F2F2;">55</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #E6E6E6;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> Influenza Epidemiology and Advanced Analytics - Respiratory Syncytial Virus (RSV)"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> Influenza Epidemiology and Advanced Analytics - Respiratory Syncytial Virus (RSV)</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #E6E6E6;">CoP</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #E6E6E6;">25</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #E6E6E6;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> Influenza Modelling Mongolia"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> Influenza Modelling Mongolia</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #F2F2F2;">13</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>AIDERS</span>"><div class="gt_from_md"><p><span style="font-weight:700;">AIDERS</span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #E6E6E6; font-weight: bold;">120</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>AI for Analytics</span>"><div class="gt_from_md"><p><span style="font-weight:700;">AI for Analytics</span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #E6E6E6; font-weight: bold;">105</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #E6E6E6;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> AI for Disease Modeling"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> AI for Disease Modeling</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #E6E6E6;">CoP</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #E6E6E6;">64</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #E6E6E6;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>Epidemiological Pipelines </span>"><div class="gt_from_md"><p><span style="font-weight:700;">Epidemiological Pipelines </span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #E6E6E6; font-weight: bold;">96</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> Pipeline Development"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> Pipeline Development</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #F2F2F2;">6</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>Data-to-Decision </span>"><div class="gt_from_md"><p><span style="font-weight:700;">Data-to-Decision </span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #E6E6E6; font-weight: bold;">91</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>Epiverse</span>"><div class="gt_from_md"><p><span style="font-weight:700;">Epiverse</span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #E6E6E6; font-weight: bold;">88</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> Epiverse Trainees "><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> Epiverse Trainees</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #F2F2F2;">74</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> Epiverse Fellows"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> Epiverse Fellows</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #F2F2F2;">16</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>Dengue and Other Arbovirus Analytics </span>"><div class="gt_from_md"><p><span style="font-weight:700;">Dengue and Other Arbovirus Analytics </span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #E6E6E6; font-weight: bold;">80</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> Dengue Analytics Workshop Group"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> Dengue Analytics Workshop Group</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #F2F2F2;">23</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> Dengue Publication Team"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> Dengue Publication Team</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #F2F2F2;">19</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>Data Harmonization</span>"><div class="gt_from_md"><p><span style="font-weight:700;">Data Harmonization</span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #E6E6E6; font-weight: bold;">79</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>Community Leadership (CoP Leads)</span>"><div class="gt_from_md"><p><span style="font-weight:700;">Community Leadership (CoP Leads)</span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #E6E6E6; font-weight: bold;">73</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>Epidemic Intelligence from Open Sources </span>"><div class="gt_from_md"><p><span style="font-weight:700;">Epidemic Intelligence from Open Sources </span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #E6E6E6; font-weight: bold;">39</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>ModHA</span>"><div class="gt_from_md"><p><span style="font-weight:700;">ModHA</span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #E6E6E6; font-weight: bold;">32</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>EWARS Mobile</span>"><div class="gt_from_md"><p><span style="font-weight:700;">EWARS Mobile</span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #E6E6E6; font-weight: bold;">23</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>Participatory Surveillance</span>"><div class="gt_from_md"><p><span style="font-weight:700;">Participatory Surveillance</span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #E6E6E6; font-weight: bold;">22</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> PS Data Analysis"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> PS Data Analysis</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #F2F2F2;">6</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> PS Recruitment and Retention"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> PS Recruitment and Retention</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #F2F2F2;">5</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left" style="background-color: #E6E6E6; font-weight: bold;"><div data-qmd="<span style='font-weight:700;'>PHI SEARO</span>"><div class="gt_from_md"><p><span style="font-weight:700;">PHI SEARO</span></p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;">CoP</td>
+<td headers="Members" class="gt_row gt_right" style="background-color: #E6E6E6; font-weight: bold;">12</td>
+<td headers="Privacy" class="gt_row gt_center" style="background-color: #E6E6E6; font-weight: bold;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#eaf7ec;color:#2c7a2c;">Open</span></td></tr>
+    <tr><td headers="Display_Name" class="gt_row gt_left gt_striped" style="background-color: #F2F2F2;"><div data-qmd="&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#666;'>↳</span> PHI SEARO Core"><div class="gt_from_md"><p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#666;">↳</span> PHI SEARO Core</p>
+</div></div></td>
+<td headers="Type" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;">G</td>
+<td headers="Members" class="gt_row gt_right gt_striped" style="background-color: #F2F2F2;">10</td>
+<td headers="Privacy" class="gt_row gt_center gt_striped" style="background-color: #F2F2F2;"><span style="display:inline-block;min-width:64px;padding:3px 10px;border-radius:10px;font-size:12px;text-align:center;font-weight:500;background-color:#faeaea;color:#a33a3a;">Private</span></td></tr>
+  </tbody>
+  <tfoot class="gt_sourcenotes">
+    <tr>
+      <td class="gt_sourcenote" colspan="4"><em>Type: N = Network, CoP = Community of Practice, G = Group.</em></td>
+    </tr>
+  </tfoot>
+  
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="engagement-in-the-largest-communities-of-practice" class="level3">
+<h3 class="anchored" data-anchor-id="engagement-in-the-largest-communities-of-practice">Engagement in the Largest Communities of Practice</h3>
+<p>The table below summarizes activity in the five largest Collaboratory communities of practice, including participation and engagement within their subgroups.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: white !important; background-color: rgba(0, 154, 222, 255) !important;">Community</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(0, 154, 222, 255) !important;">Users</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(0, 154, 222, 255) !important;">Topics</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(0, 154, 222, 255) !important;">Posts</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(0, 154, 222, 255) !important;">Likes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 25em;">Epidemiological Parameters</td>
+<td style="text-align: right; width: 8em;">157</td>
+<td style="text-align: right; width: 8em;">50</td>
+<td style="text-align: right; width: 8em;">166</td>
+<td style="text-align: right; width: 8em;">152</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 25em;">Mpox Analytics</td>
+<td style="text-align: right; width: 8em;">134</td>
+<td style="text-align: right; width: 8em;">43</td>
+<td style="text-align: right; width: 8em;">154</td>
+<td style="text-align: right; width: 8em;">181</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 25em;">IPSN Wastewater and Environmental Surveillance</td>
+<td style="text-align: right; width: 8em;">129</td>
+<td style="text-align: right; width: 8em;">8</td>
+<td style="text-align: right; width: 8em;">86</td>
+<td style="text-align: right; width: 8em;">197</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 25em;">Ebola Outbreak Analytics</td>
+<td style="text-align: right; width: 8em;">128</td>
+<td style="text-align: right; width: 8em;">6</td>
+<td style="text-align: right; width: 8em;">79</td>
+<td style="text-align: right; width: 8em;">62</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 25em;">Influenza Epidemiology and Advanced Analytics</td>
+<td style="text-align: right; width: 8em;">123</td>
+<td style="text-align: right; width: 8em;">33</td>
+<td style="text-align: right; width: 8em;">65</td>
+<td style="text-align: right; width: 8em;">38</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</section>
+<section id="cross-com" class="level3">
+<h3 class="anchored" data-anchor-id="cross-com">Cross-Community Connectivity</h3>
+<p>The following table reflects membership in CoPs only and does not include Networks:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold; color: white !important; background-color: rgba(0, 154, 222, 255) !important;">Membership</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(0, 154, 222, 255) !important;">Number of Users</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold; color: white !important; background-color: rgba(0, 154, 222, 255) !important;">Percentage of Total Users</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 25em;">None</td>
+<td style="text-align: right; width: 10em;">1139</td>
+<td style="text-align: right; width: 25em;">57.6%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 25em;">1 CoP</td>
+<td style="text-align: right; width: 10em;">580</td>
+<td style="text-align: right; width: 25em;">29.3%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 25em;">2 CoPs</td>
+<td style="text-align: right; width: 10em;">126</td>
+<td style="text-align: right; width: 25em;">6.4%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 25em;">3 CoPs</td>
+<td style="text-align: right; width: 10em;">52</td>
+<td style="text-align: right; width: 25em;">2.6%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 25em;">4+ CoPs</td>
+<td style="text-align: right; width: 10em;">80</td>
+<td style="text-align: right; width: 25em;">4%</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</section>
+<section id="cross-community-map" class="level3">
+<h3 class="anchored" data-anchor-id="cross-community-map">Cross-Community Map</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="communities_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="1152"></p>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

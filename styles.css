@@ -1,0 +1,76 @@
+/* Import Google Font (Lato) */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+
+/* --- Overall Page Styling --- */
+body {
+  background-color: #FFFFFF !important;
+  font-family: 'Lato', sans-serif;
+  color: #222;
+  font-size: 0.95em; /* slightly larger for readability */
+}
+
+/* --- Navigation Bar --- */
+.navbar {
+  background-color: #FFFFFF !important;
+}
+
+.navbar-nav .nav-link,
+.navbar-brand {
+  color: #009ADE !important;
+  font-weight: 600; /* stronger emphasis on nav items */
+}
+
+.navbar-nav .nav-link:hover {
+  color: #F4A81D !important; /* golden accent on hover */
+}
+
+/* --- Headings --- */
+h1.title,
+h2, h3, h4, h5, h6,
+.page h2, .page h3, .page h4, .page h5, .page h6 {
+  font-family: 'Lato', sans-serif;
+  color: #00205C !important; /* force override */
+}
+
+h1.title {
+  font-weight: 700;
+  font-size: 2em;
+}
+
+h2, .page h2 { font-weight: 600; }
+h3, .page h3 { font-weight: 600; }
+h4, .page h4 { font-weight: 600; }
+h5, .page h5 { font-weight: 600; }
+h6, .page h6 { font-weight: 600; }
+
+h3 .header-anchor,
+h3 .header-anchor-link {
+  display: none !important;
+}
+
+
+
+/* --- Paragraphs & Lists --- */
+p, li {
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  font-size: .90em;
+}
+
+/* --- Links --- */
+a {
+  color: #009ADE;
+  font-weight: 500;
+}
+
+a:hover {
+  color: #F4A81D;
+}
+
+/* Left-hand TOC active item (Cosmo theme) */
+.sidebar-content a.active {
+  color: #F4A81D !important;      /* text color for active section */
+  font-weight: 600;               /* optional bold */
+}
+
+
