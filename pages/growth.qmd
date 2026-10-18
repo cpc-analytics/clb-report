@@ -1,0 +1,67 @@
+---
+title: ""
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+source(here::here("R", "setup.R"), echo = FALSE)
+source(here::here("R", "load-data.R"), echo = FALSE)
+source(here::here("R", "kpis.R"), echo = FALSE)
+source(here::here("R", "trends.R"), echo = FALSE)
+
+retention_text <- if (is.na(retention_latest$share)) {
+  "There is not yet enough snapshot history to report this indicator."
+} else {
+  sprintf("Currently, **%s** out of **%s members** (**%s**) meet this criterion, %s the target of **\u2265 %d%%**.",
+          fmt_n(retention_latest$retained), fmt_n(retention_latest$total),
+          fmt_pct(retention_latest$share * 100),
+          if (retention_latest$share >= cfg$target_retention) "meeting" else "falling short of",
+          round(cfg$target_retention * 100))
+}
+
+```
+
+### New Members {#no-member}
+
+Monthly signups show the number of new members joining Collaboratory, reflecting platform growth trends. The cumulative view illustrates total membership over time.
+
+```{r}
+#| label: monthly-signups-charts
+#| fig-height: 4
+
+
+ggplot(signups_monthly_filtered, aes(x = Month, y = Total_Signups)) +
+  geom_line(color = collab$brand, size = 1) +
+  geom_point(color = collab$brand, size = 2) +
+  labs(
+    title = "Monthly Member Signups",
+    subtitle = glue::glue("As of {fmt_date(forum_stats_date)}"),
+    x = "",
+    y = ""
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "2 months") +
+  theme_collab_line()
+
+signups_monthly_cumulative <- signups_monthly_filtered %>%
+  arrange(Month) %>%
+  mutate(Cumulative_Signups = cumsum(Total_Signups))
+
+ggplot(signups_monthly_cumulative, aes(x = Month, y = Cumulative_Signups)) +
+  geom_line(color = collab$brand, size = 1) +
+  geom_point(color = collab$brand, size = 2) +
+  labs(
+    title = "Cumulative Member Signups",
+    subtitle = glue::glue("As of {fmt_date(forum_stats_date)}"),
+    x = "",
+    y = ""
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "2 months") +
+  theme_collab_line()
+```
+
+### Longterm Retention {#long-ret}
+
+Longterm retention measures the proportion of members who have logged in at least once every `r cfg$retention_gap_days` days over the past `r round(cfg$retention_window_days / 365 * 12)` months, highlighting consistent participation. `r retention_text`

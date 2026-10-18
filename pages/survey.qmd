@@ -1,0 +1,124 @@
+---
+title: ""
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+source(here::here("R", "setup.R"), echo = FALSE)
+source(here::here("R", "config.R"), echo = FALSE)
+source(here::here("R", "metrics.R"), echo = FALSE)
+source(here::here("R", "survey.R"), echo = FALSE)
+
+# One tab per round below. Round ids are set in config.R.
+jun <- survey_results[["2025-06"]]
+dec <- survey_results[["2025-12"]]
+```
+
+### Community Pulse Survey
+
+The **Community Pulse Survey** is circulated periodically with four short questions to gauge member sentiment and the value Collaboratory provides. Select a tab below to view results from each round.
+
+::: {.panel-tabset}
+
+## June 2025
+
+**`r jun$n` responses** received: `r jun$languages`.
+
+Collaboratory's **Net Promoter Score: `r jun$nps_score`** — Promoters (`r jun$promoters`%), Passives (`r jun$passives`%), Detractors (`r jun$detractors`%).
+
+#### Member Satisfaction
+
+```{r}
+#| label: satisfaction-chart-2025-06
+#| fig-height: 4
+ggplot(jun$satisfaction, aes(x = Satisfaction, y = pct)) +
+  geom_bar(stat = "identity", width = 0.6, fill = collab$brand) +
+  geom_text(aes(label = paste0(round(pct, 1), "%")),
+            hjust = -0.1, size = collab_size$label) +
+  coord_flip() +
+  scale_y_continuous(labels = scales::percent_format(scale = 1),
+                     expand = expansion(mult = c(0, 0.1))) +
+  labs(title = "Member Satisfaction", x = "", y = "") +
+  theme_collab_hbar()
+```
+
+#### Collaboratory Value
+
+Members take value from the following areas offered by Collaboratory. The highest value offering is **`r tolower(jun$top_offering_label)` at `r round(jun$top_offering_pct)`%**.
+
+```{r}
+#| label: value-chart-2025-06
+#| fig-height: 4
+ggplot(jun$value, aes(x = Question, y = pct_signed, fill = Response)) +
+  geom_bar(stat = "identity", width = 0.6) +
+  coord_flip() +
+  scale_fill_manual(values = custom_palette, name = "") +
+  scale_y_continuous(labels = function(x) paste0(abs(x), "%"),
+                     expand = expansion(mult = c(0.1, 0.1))) +
+  scale_x_discrete(labels = question_labels) +
+  labs(
+    title = "Have the following Collaboratory offerings added value to your work?",
+    x = "", y = ""
+  ) +
+  theme_collab_hbar("bottom")
+```
+
+
+## December 2025
+
+**`r dec$n` responses** received: `r dec$languages`.
+
+Collaboratory's **Net Promoter Score: `r dec$nps_score`** — Promoters (`r dec$promoters`%), Passives (`r dec$passives`%), Detractors (`r dec$detractors`%).
+
+#### Member Satisfaction
+
+```{r}
+#| label: satisfaction-chart-2025-12
+#| fig-height: 4
+ggplot(dec$satisfaction, aes(x = Satisfaction, y = pct)) +
+  geom_bar(stat = "identity", width = 0.6, fill = collab$brand) +
+  geom_text(aes(label = paste0(round(pct, 1), "%")),
+            hjust = -0.1, size = collab_size$label) +
+  coord_flip() +
+  scale_y_continuous(labels = scales::percent_format(scale = 1),
+                     expand = expansion(mult = c(0, 0.1))) +
+  labs(title = "Member Satisfaction", x = "", y = "") +
+  theme_collab_hbar()
+```
+
+#### Collaboratory Value
+
+```{r}
+#| label: value-chart-2025-12
+#| fig-height: 4
+ggplot(dec$value, aes(x = Question, y = pct_signed, fill = Response)) +
+  geom_bar(stat = "identity", width = 0.6) +
+  coord_flip() +
+  scale_fill_manual(values = custom_palette, name = "") +
+  scale_y_continuous(labels = function(x) paste0(abs(x), "%"),
+                     expand = expansion(mult = c(0.1, 0.1))) +
+  scale_x_discrete(labels = question_labels) +
+  labs(
+    title = "Have the following Collaboratory offerings added value to your work?",
+    x = "", y = ""
+  ) +
+  theme_collab_hbar("bottom")
+```
+
+:::
+
+### Trends at a Glance
+
+A directional comparison between the two survey rounds. Note: the rounds had different sample sizes (`r dec$n` in `r dec$label` vs `r jun$n` in `r jun$label`), so shifts should be interpreted as indicative rather than definitive.
+
+::: {.collab-table}
+
+| Metric | `r jun$label` | `r dec$label` | Direction |
+|:-------|----------:|--------------:|:---------:|
+| Net Promoter Score | `r jun$nps_score` | `r dec$nps_score` | `r trend_html(dec$nps_score, jun$nps_score)` |
+| Positive Satisfaction | `r round(jun$sat_positive, 1)`% | `r round(dec$sat_positive, 1)`% | `r trend_html(dec$sat_positive, jun$sat_positive)` |
+| Responses | `r jun$n` | `r dec$n` | `r trend_html(dec$n, jun$n, cfg$trend_threshold_count)` |
+
+:::

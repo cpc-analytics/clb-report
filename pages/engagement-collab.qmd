@@ -1,0 +1,304 @@
+---
+title: ""
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+source(here::here("R", "setup.R"), echo = FALSE)
+source(here::here("R", "table-theme.R"), echo = FALSE)
+source(here::here("R", "load-data.R"), echo = FALSE)
+source(here::here("R", "kpis.R"), echo = FALSE)
+source(here::here("R", "trends.R"), echo = FALSE)
+source(here::here("R", "engagement-metrics.R"), echo = FALSE)
+
+active_now <- kpi_weekly %>% slice_max(week, n = 1)
+
+
+```
+
+### Active Members {#active-members}
+
+**`r fmt_n(active_now$active_count)`** out of **`r fmt_n(active_now$total_user_count)`** users were active, which is **`r fmt_pct(active_now$prop_active * 100)`** of the community. The target for this indicator is set as **≥ `r round(cfg$target_active * 100)`%**.
+
+The proportion of active members reflects users who logged in **at least once within the past `r cfg$active_days` days**, based on weekly snapshots. Members who have not logged in during that `r cfg$active_days`-day window are considered inactive (dormant or uninterested).
+
+```{r}
+#| label: active-members-trend
+#| fig-height: 4
+
+# Recent weeks only
+active_kpi_plot <- kpi_weekly %>%
+  arrange(week) %>%
+  filter(week >= max(week) - cfg$trend_window_days)
+
+# Plot
+ggplot(active_kpi_plot, aes(x = week, y = prop_active)) +
+  geom_line(color = collab$brand, size = 1) +
+  geom_point(color = collab$brand, size = 2) +
+  labs(
+    title = "Active Members",
+    subtitle = glue("As of {fmt_date(max(active_kpi_plot$week))}"),
+    x = "",
+    y = ""
+  ) +
+  scale_x_date(
+    date_labels = "%b %Y",
+    date_breaks = "1 month",
+    expand = expansion(add = c(7, 7))  # padding on both sides
+  ) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  theme_collab_line()
+
+```
+
+### Posting Activity {#posting-act}
+
+**`r fmt_pct(latest_kpi$posting)`** of members posted at least once in the most recent month.
+
+Posting activity tracks sustained member interaction with the platform by measuring the proportion of users who post at least once per month through Collaboratory channels.
+
+```{r}
+#| label: posting-activity-trend
+#| fig-height: 4
+# Recent weeks only
+posting_kpi_plot <- monthly_posters_kpi %>%
+  arrange(week) %>%
+  filter(week >= max(week) - cfg$trend_window_days)
+
+# Plot
+ggplot(posting_kpi_plot, aes(x = week, y = prop_active_posters)) +
+  geom_line(color = collab$brand, size = 1) +
+  geom_point(color = collab$brand, size = 2) +
+  labs(
+    title = "Posting Activity",
+    subtitle = glue("As of {fmt_date(max(posting_kpi_plot$week))}"),
+    x = "",
+    y = ""
+  ) +
+  scale_x_date(
+    date_labels = "%b %Y",
+    date_breaks = "1 month",
+    expand = expansion(add = c(7, 7))  # padding on both sides
+  ) +
+  scale_y_continuous(
+  labels = scales::percent_format(accuracy = 0.1),
+  limits = c(
+    floor(min(posting_kpi_plot$prop_active_posters) * 1000) / 1000,
+    ceiling(max(posting_kpi_plot$prop_active_posters) * 1000) / 1000
+  ),
+  expand = expansion(mult = c(0.1, 0.15))
+) +
+  theme_collab_line()
+```
+
+The volume of posts, likes, and topics reflects total community activity over time.
+
+```{r}
+#| label: monthly-activity-chart
+#| fig-height: 4
+# Filter out NA rows
+plot_data <- combined_monthly %>% filter(!is.na(Month))
+
+# Define legend order
+legend_order <- c("Topics", "Posts", "Likes")
+
+# Plot
+ggplot(plot_data, aes(x = Month)) +
+  geom_line(aes(y = Total_Topics, color = factor("Topics", levels = legend_order)), size = 1) +
+  geom_point(aes(y = Total_Topics, color = factor("Topics", levels = legend_order)), size = 2) +
+  geom_line(aes(y = Total_Posts, color = factor("Posts", levels = legend_order)), size = 1) +
+  geom_point(aes(y = Total_Posts, color = factor("Posts", levels = legend_order)), size = 2) +
+  geom_line(aes(y = Total_Likes, color = factor("Likes", levels = legend_order)), size = 1) +
+  geom_point(aes(y = Total_Likes, color = factor("Likes", levels = legend_order)), size = 2) +
+  labs(
+    title = "Monthly User Activity",
+    subtitle = glue::glue("As of {fmt_date(forum_stats_date)}"),
+    x = "",
+    y = ""
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "2 months") +
+  scale_color_manual(
+    values = c("Topics" = collab$brand, "Posts" = collab$cat0, "Likes" = collab$cat1),
+    breaks = legend_order
+  ) +
+  theme_collab_line("bottom")
+```
+
+```{r}
+#| label: cumulative-activity-chart
+#| fig-height: 4
+# Compute cumulative values
+cumulative_data <- combined_monthly %>%
+  arrange(Month) %>%
+  mutate(
+    Cumulative_Topics = cumsum(Total_Topics),
+    Cumulative_Posts = cumsum(Total_Posts),
+    Cumulative_Likes = cumsum(Total_Likes)
+  ) %>%
+  filter(!is.na(Month))
+
+# Define legend order
+legend_order <- c("Topics", "Posts", "Likes")
+
+# Plot
+ggplot(cumulative_data, aes(x = Month)) +
+  geom_line(aes(y = Cumulative_Topics, color = factor("Topics", levels = legend_order)), size = 1) +
+  geom_point(aes(y = Cumulative_Topics, color = factor("Topics", levels = legend_order)), size = 2) +
+  geom_line(aes(y = Cumulative_Posts, color = factor("Posts", levels = legend_order)), size = 1) +
+  geom_point(aes(y = Cumulative_Posts, color = factor("Posts", levels = legend_order)), size = 2) +
+  geom_line(aes(y = Cumulative_Likes, color = factor("Likes", levels = legend_order)), size = 1) +
+  geom_point(aes(y = Cumulative_Likes, color = factor("Likes", levels = legend_order)), size = 2) +
+  labs(
+    title = "Cumulative User Activity",
+    subtitle = glue::glue("As of {fmt_date(forum_stats_date)}"),
+    x = "",
+    y = ""
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "2 months") +
+  scale_color_manual(
+    values = c("Topics" = collab$brand, "Posts" = collab$cat0, "Likes" = collab$cat1),
+    breaks = legend_order
+  ) +
+  theme_collab_line("bottom")
+```
+
+### Engagement {#engagement}
+
+Monthly engagement metrics provide an overview of user activity on the forum. These include total and new user counts, along with averages for user activity.Users are classified by recency of activity:
+
+-   **Active**: last seen within `r cfg$active_days` days
+-   **Dormant**: last seen `r cfg$active_days + 1`–`r cfg$dormant_days` days ago
+-   **Uninterested**: last seen more than `r cfg$dormant_days` days ago
+
+Engagement intensity is assessed based on the average time a user spends reading per month, normalized by account age, enabling comparison across all users. Based on this measure, users are categorized as:
+
+-   **Highly Engaged**: `r cfg$engagement_high` or more minutes per month
+-   **Moderately Engaged**: between `r cfg$engagement_moderate` and `r cfg$engagement_high` minutes per month
+-   **Barely Engaged**: less than `r cfg$engagement_moderate` minutes per month
+
+::: panel-tabset
+#### Engagement Metrics {#engagement-metrics}
+
+All figures reflect month-over-month changes to support interpretation of longer-term trends. Note that the monthly change for activity and engagement reflects increases or decreases in absolute numbers, and does not indicate changes in their proportional share of the user base.
+
+```{r}
+#| label: table-engagement-metrics
+tables_all$metrics %>% kable_monthly("Average activity per member")
+```
+
+```{r}
+#| label: table-activity-groups
+tables_all$activity %>% kable_monthly("Members by activity")
+```
+
+```{r}
+#| label: table-engagement-levels
+tables_all$engagement %>% kable_monthly("Members by engagement level")
+```
+
+#### Engagement Metrics without the Secretariat
+
+The following tables replicate the previous engagement analysis but exclude users affiliated with the Secretariat. This adjustment allows for a clearer view of engagement patterns among the broader user base, without the influence of highly active administrative accounts.
+
+```{r}
+#| label: table-engagement-metrics-no-secretariat
+tables_no_sec$metrics %>% kable_monthly("Average activity per member")
+```
+
+```{r}
+#| label: table-activity-groups-no-secretariat
+tables_no_sec$activity %>% kable_monthly("Members by activity")
+```
+
+```{r}
+#| label: table-engagement-levels-no-secretariat
+tables_no_sec$engagement %>% kable_monthly("Members by engagement level")
+```
+
+<div>
+
+</div>
+:::
+
+### Engagement Levels {#eng-levels}
+
+```{r}
+#| label: engagement-levels-prep
+# Recent weeks only, with readable level names
+engagement_recent <- engagement_weekly %>%
+  filter(week >= max(week) - cfg$trend_window_days) %>%
+  mutate(
+    Category = factor(
+      recode(level, High = "Highly engaged", Moderate = "Moderately engaged", Barely = "Barely engaged"),
+      levels = c("Barely engaged", "Moderately engaged", "Highly engaged")
+    ),
+    ratio = share
+  )
+```
+
+```{r}
+#| label: engagement-levels-chart
+#| fig-height: 2
+
+# Step 5: Horizontal stacked bar chart for latest week
+latest_week <- max(engagement_recent$week)
+engagement_latest <- engagement_recent %>%
+  filter(week == latest_week) %>%
+  mutate(
+    prop_percent = ratio * 100,
+    Category = factor(Category, levels = c("Highly engaged", "Moderately engaged", "Barely engaged"))
+  )
+
+level_fills <- c(
+  "Barely engaged"     = collab$brand,
+  "Moderately engaged" = collab$cat0,
+  "Highly engaged"     = collab$cat1
+)
+
+bar_chart <- ggplot(engagement_latest, aes(x = 1, y = prop_percent, fill = Category)) +
+  geom_col(width = 0.3, color = "white") +
+  coord_flip() +
+  geom_text(aes(label = paste0(round(prop_percent, 1), "%"), group = Category,
+                color = label_color(level_fills[as.character(Category)])),
+            position = position_stack(vjust = 0.5), size = collab_size$label) +
+  scale_color_identity() +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 100), labels = scales::percent_format(scale = 1)) +
+  scale_fill_manual(values = level_fills) +
+  labs(
+    title = "Engagement Levels – Latest Week",
+    subtitle = glue("As of {fmt_date(snapshot_date)}"),
+    x = NULL,
+    y = NULL,
+    fill = ""
+  ) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  theme_collab_bar()
+
+bar_chart
+```
+
+### Collaborative Resources and Repositories
+
+Members share resources and tools through Collaboratory, highlighting collaboration and the exchange of knowledge within the community.
+
+```{r}
+#| label: repository-figures
+#| results: asis
+# Figures come from data/manual/repositories.csv (columns: group, metric, value)
+repo_metrics <- read_manual("repositories")
+if (is.null(repo_metrics)) {
+  cat("Repository figures are not available for this period.\n")
+} else {
+  for (g in unique(repo_metrics$group)) {
+    rows <- repo_metrics[repo_metrics$group == g, ]
+    cat("\n##### ", g, "\n\n", sep = "")
+    cat(paste0("-   ", rows$metric, ": ", rows$value), sep = "\n")
+    cat("\n")
+  }
+}
+```
+
+Note: Counts may include overlaps across repositories.

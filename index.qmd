@@ -1,9 +1,9 @@
 ---
-subtitle: "`r format(Sys.Date(), '%B %d, %Y')` — WHO Hub for Pandemic and Epidemic Intelligence"
+subtitle: 'WHO Hub for Pandemic and Epidemic Intelligence · `r source(here::here("R", "config.R")); source(here::here("R", "metrics.R")); source(here::here("R", "read-data.R")); latest_data_date_label()`'
 title: "Collaboratory Report"
 format: html
 editor: visual
-css: styles.css
+css: assets/styles.css
 ---
 
 ```{r}
@@ -11,12 +11,10 @@ css: styles.css
 #| include: false
 # Load setup script
 library(tidyverse)
-source(here::here("scripts", "load-data.R"), echo = FALSE)
-source(here::here("scripts", "overview.R"), echo = FALSE)
-source(here::here("scripts", "KPIs.R"), echo = FALSE)
-source(here::here("scripts", "KPIs_2.R"), echo = FALSE)
-source(here::here("scripts", "communities.R"), echo = FALSE)
-source(here::here("scripts", "map.R"), echo = FALSE)
+source(here::here("R", "load-data.R"), echo = FALSE)
+source(here::here("R", "kpis.R"), echo = FALSE)
+source(here::here("R", "communities.R"), echo = FALSE)
+source(here::here("R", "map.R"), echo = FALSE)
 
 ```
 
@@ -25,127 +23,15 @@ This **web-based report** serves as the central resource for monitoring Collabor
 ### Overview
 
 ```{=html}
-<style>
-/* Box styling */
-.stats-box {
-  background-color: #019ADE !important;
-  /* dark blue */
-  color: white !important;                /* white text */
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;    /* vertical centering */
-  align-items: center !important;        /* horizontal centering */
-  text-align: center !important;
-  padding: 10px !important;
-  border-radius: 8px !important;
-  width: 250px !important;               /* fixed width */
-  height: 100px !important;              /* fixed height */
-  font-size: 16px !important;
-  flex: none !important;                  /* prevent stretching */
-  box-sizing: border-box;
-  cursor: pointer;
-}
-
-/* Labels and numbers */
-.stats-label {
-  margin-bottom: 5px;
-  font-size: 14px !important;
-}
-
-.stats-number {
-  font-size: 24px !important;
-}
-
-.stats-number-green {
-  color: #39FF14 !important;
-}
-
-.stats-number-white {
-  color: white !important;
-}
-
-/* Containers */
-.stats-container {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  margin-top: 20px;
-  margin-bottom: 40px;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 250px);
-  gap: 20px;
-  justify-content: center;
-  margin-top: 20px;
-  margin-bottom: 40px;
-}
-
-/* Tooltip styling */
-.stats-term {
-  position: relative;
-  display: inline;
-  cursor: help;
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
-  font-size: inherit !important;  /* THIS IS THE KEY FIX */
-}
-
-/* Tooltip styling */
-.tooltip {
-  visibility: hidden;
-  opacity: 0;
-  position: absolute;
-  bottom: calc(100% + 5px);
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 12px;
-  width: 250px;
-  background-color: #333;
-  color: #fff !important;
-  text-align: left;
-  border-radius: 6px;
-  font-size: 13px !important;
-  line-height: 1.4;
-  transition: opacity 0.3s;
-  z-index: 1000;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  pointer-events: none;
-  font-family: 'Lato', sans-serif !important;
-}
-
-.tooltip::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #333 transparent transparent transparent;
-}
-
-.stats-term:hover .tooltip {
-  visibility: visible;
-  opacity: 1;
-}
-</style>
-
-```
-
-```{=html}
 <div class="stats-container">
-<a href="growth.html#no-member" style="text-decoration: none; color: inherit;">
+<a href="pages/growth.html#no-member" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
     <div class="stats-label">Number of Members</div>
     <div>`r total_users`</div>
   </div>
 </a>
   
-<a href="communities.html#com-met" style="text-decoration: none; color: inherit;">
+<a href="pages/communities.html#com-met" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
     <div class="stats-label">Number of Networks and CoPs</div>
     <div>`r count_cop + count_network`</div>
@@ -153,7 +39,8 @@ This **web-based report** serves as the central resource for monitoring Collabor
 </a>
 </div>
 ```
-As of **`r current_month_date`**, Collaboratory brings together **`r total_users` members** across **`r count_network` networks** and **`r count_cop` communities of practice**, connecting from **`r n_distinct(IP_address$COUNTRY[!is.na(IP_address$COUNTRY) & !is.na(IP_address$who_region)])` countries** and **300+ institutions** worldwide.
+
+As of **`r fmt_date(snapshot_date, text = TRUE)`**, Collaboratory brings together **`r total_users` members** across **`r count_network` networks** and **`r count_cop` communities of practice**, connecting from **`r geo$n_countries` countries** and **`r institutions_label` institutions** worldwide.
 
 Over the past month, **`r users_joined_last_month` new members** have joined the platform, contributing to ongoing growth and engagement.
 
@@ -163,7 +50,7 @@ Key Performance Indicators (KPIs) provide a standardized framework to monitor an
 
 ```{=html}
 <div class="stats-grid">
-<a href="engagement_collab.html#active-members" style="text-decoration: none; color: inherit;">
+<a href="pages/engagement-collab.html#active-members" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
     <div class="stats-label">
       <span class="stats-term">Active Members
@@ -171,14 +58,14 @@ Key Performance Indicators (KPIs) provide a standardized framework to monitor an
       </span>
     </div>
     <div>
-      <span class="`r ifelse(kpi_weekly |> filter(week == max(week)) |> pull(prop_active_90d) * 100 >= 30, 'stats-number-green', 'stats-number-white')`">
-        `r sprintf("%.0f", kpi_weekly |> filter(week == max(week)) |> pull(prop_active_90d) * 100)`%
+      <span class="`r kpi_class(latest_kpi$active / 100, cfg$target_active)`">
+        `r sprintf("%.0f%%", latest_kpi$active)`
       </span>
     </div>
   </div>
 </a>
 
-<a href="growth.html#long-ret" style="text-decoration: none; color: inherit;">
+<a href="pages/growth.html#long-ret" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
     <div class="stats-label">
       <span class="stats-term">Longterm Retention
@@ -186,45 +73,47 @@ Key Performance Indicators (KPIs) provide a standardized framework to monitor an
       </span>
     </div>
     <div>
-      23%
+      <span class="`r kpi_class(latest_kpi$retention / 100, cfg$target_retention)`">
+        `r ifelse(is.na(latest_kpi$retention), "n/a", sprintf("%.0f%%", latest_kpi$retention))`
+      </span>
     </div>
   </div>
 </a>
 
-<a href="engagement_collab.html#posting-act" style="text-decoration: none; color: inherit;">
+<a href="pages/engagement-collab.html#posting-act" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
     <div class="stats-label">
       <span class="stats-term">Posting Activity
         <span class="tooltip">Percentage of members who posted at least once in the past month.</span>
       </span>
     </div>
-    <div>2%</div>
+    <div>`r sprintf("%.0f%%", latest_kpi$posting)`</div>
   </div>
 </a>
 
-<a href="engagement_collab.html#eng-levels" style="text-decoration: none; color: inherit;">
+<a href="pages/engagement-collab.html#eng-levels" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
     <div class="stats-label">
       <span class="stats-term">Moderate-High Engagement
         <span class="tooltip">Members showing moderate to high engagement levels on the platform.</span>
       </span>
     </div>
-    <div>18%</div>
+    <div>`r sprintf("%.0f%%", latest_kpi$engagement_mod_high)`</div>
   </div>
 </a>
 
-<a href="communities.html#cross-com" style="text-decoration: none; color: inherit;">
+<a href="pages/communities.html#cross-com" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
     <div class="stats-label">
       <span class="stats-term">Cross-Community Connection
         <span class="tooltip">Percentage of members participating in multiple communities.</span>
       </span>
     </div>
-    <div>13%</div>
+    <div>`r sprintf("%.0f%%", cross_community_share)`</div>
   </div>
 </a>
 
-<a href="diversity_reach.html#gen-ratio" style="text-decoration: none; color: inherit;">
+<a href="pages/diversity-reach.html#gen-ratio" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
     <div class="stats-label">
       <span class="stats-term">Gender Distribution
@@ -235,7 +124,7 @@ Key Performance Indicators (KPIs) provide a standardized framework to monitor an
   </div>
 </a>
 
-<a href="diversity_reach.html#geo-rep" style="text-decoration: none; color: inherit;">
+<a href="pages/diversity-reach.html#geo-rep" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
     <div class="stats-label">
       <span class="stats-term">Geographic Reach
@@ -243,12 +132,12 @@ Key Performance Indicators (KPIs) provide a standardized framework to monitor an
       </span>
     </div>
     <div>
-      <span class="stats-number-green">`r n_distinct(IP_address$COUNTRY[!is.na(IP_address$COUNTRY) & !is.na(IP_address$who_region)])`</span>
+      <span class="stats-number-green">`r geo$n_countries`</span>
     </div>
   </div>
 </a>
 
-<a href="diversity_reach.html#int-rep" style="text-decoration: none; color: inherit;">
+<a href="pages/diversity-reach.html#int-rep" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
     <div class="stats-label">
       <span class="stats-term">Institutions
@@ -256,12 +145,12 @@ Key Performance Indicators (KPIs) provide a standardized framework to monitor an
       </span>
     </div>
     <div>
-      <span class="stats-number-green">300+</span>
+      <span class="stats-number-green">`r institutions_label`</span>
     </div>
   </div>
 </a>
 
-<a href="diversity_reach.html#dis-rep" style="text-decoration: none; color: inherit;">
+<a href="pages/diversity-reach.html#dis-rep" style="text-decoration: none; color: inherit;">
   <div class="stats-box">
     <div class="stats-label">
       <span class="stats-term">Disciplines

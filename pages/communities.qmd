@@ -1,0 +1,268 @@
+---
+title: ""
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+source(here::here("R", "setup.R"), echo = FALSE)
+source(here::here("R", "load-data.R"), echo = FALSE)
+source(here::here("R", "communities.R"), echo = FALSE)
+source(here::here("R", "table-theme.R"), echo = FALSE)
+
+
+
+```
+
+```{=html}
+  <div class="stats-grid stats-below">
+    <div class="stats-box">
+      Number of <span class="stats-term">Networks<span class="tooltip">An established and structured alliance of people and partner organizations who exchange information and collaborate informally across regions and topics.</span></span>
+      `r count_network`
+    </div>
+    
+    <div class="stats-box">
+      Number of
+      <span class="stats-term">Communities of Practice<span class="tooltip">A group of people who regularly engage to share expertise, build capacity, and advance learning around a specific topic.</span></span>
+      `r count_cop`
+    </div>
+    
+    <div class="stats-box">
+      Number of <span class="stats-term">Groups<span class="tooltip">A formally designated team with defined objectives.</span></span>
+      `r count_group`
+   </div>
+</div>
+```
+### Network, Community of Practice, and Group Sizes {#com-met}
+
+Membership counts are organized as follows: Groups are listed under their parent Network or Communities of Practice (CoP). CoPs that belong to Networks are shown separately and not counted in the Network total. Group members are included in their parent Network or CoP count.
+
+```{r}
+#| label: community-sizes-table
+# build the parent/child rows for the table
+create_hierarchical_df <- function(parent_df, child_df, parent_type) {
+  parent_df_display <- parent_df %>%
+    left_join(community_tags %>% select(Tags, Display_Name), by = "Tags") %>%
+    mutate(Display_Name = if_else(is.na(Display_Name) | Display_Name == "", Name, Display_Name))
+  
+  # children carry their own type, taken from community_tags
+  child_df_display <- child_df %>%
+    left_join(community_tags %>% select(Tags, Display_Name, Type.1), by = "Tags") %>%
+    mutate(Display_Name = if_else(is.na(Display_Name) | Display_Name == "", Name, Display_Name))
+  
+  parent_child_pairs <- parent_df_display %>%
+    select(Tags, Display_Name, Members, Privacy) %>%
+    mutate(Type = parent_type) %>%
+    left_join(
+      child_df_display %>%
+        filter(!is.na(Parent_Tag) & Parent_Tag != "") %>%
+        select(Parent_Tag, Display_Name, Members, Privacy, Type.1),
+      by = c("Tags" = "Parent_Tag"),
+      relationship = "one-to-many"
+    ) %>%
+    mutate(has_children = !is.na(Display_Name.y))
+  
+  bind_rows(
+    parent_child_pairs %>%
+      distinct(Tags, Display_Name.x, Members.x, Privacy.x, Type) %>%
+      transmute(
+        Display_Name = Display_Name.x,
+        Members = Members.x,
+        Privacy = Privacy.x,
+        Type = Type,
+        Parent_Tag = Tags,
+        Sort_Order = Members.x,
+        Is_Parent = TRUE
+      ),
+    parent_child_pairs %>%
+      filter(has_children) %>%
+      transmute(
+        Display_Name = indent_child(Display_Name.y),
+        Members = Members.y,
+        Privacy = Privacy.y,
+        Type = Type.1,
+        Parent_Tag = Tags,
+        Sort_Order = Members.x,
+        Is_Parent = FALSE
+      )
+  ) %>%
+    arrange(desc(Sort_Order), Parent_Tag, desc(Is_Parent), desc(Members))
+}
+df_children <- bind_rows(df_group, df_cop)
+network_hierarchical <- create_hierarchical_df(df_network, df_children, "a-Network")
+df_cop_parents <- df_cop %>% filter(is.na(Parent_Tag) | Parent_Tag == "")
+cop_hierarchical <- create_hierarchical_df(df_cop_parents, df_children, "b-CoP")
+# put whichever group has the largest single community on top
+max_network_size <- max(df_network$Members, na.rm = TRUE)
+max_cop_size     <- max(df_cop$Members, na.rm = TRUE)
+hierarchical_table <- if (max_network_size >= max_cop_size) {
+  bind_rows(network_hierarchical, cop_hierarchical)
+} else {
+  bind_rows(cop_hierarchical, network_hierarchical)
+}
+parent_rows <- which(hierarchical_table$Is_Parent)
+# short type labels; bold parent names so they survive fmt_markdown
+hierarchical_table <- hierarchical_table %>%
+  mutate(
+    Type = recode(Type,
+      "a-Network" = "N",
+      "b-CoP"     = "CoP",
+      "c-Group"   = "G"
+    ),
+    Display_Name = if_else(Is_Parent, bold_md(Display_Name), Display_Name)
+  )
+
+hierarchical_table %>%
+  select(Display_Name, Type, Privacy, Members) %>%
+  gt() %>%
+  cols_label(
+    Display_Name = "Name",
+    Type         = "Type",
+    Privacy      = "Access",
+    Members      = "Members"
+  ) %>%
+  cols_align(align = "left",  columns = c(Display_Name, Type, Privacy)) %>%
+  cols_align(align = "right", columns = Members) %>%
+  fmt_markdown(columns = Display_Name) %>%
+  text_transform(
+    locations = cells_body(columns = Privacy),
+    fn = access_badge
+  ) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_body(rows = parent_rows)
+  ) %>%
+  tab_style(
+    style = cell_borders(sides = "top", color = collab$fg_weakest, weight = px(1)),
+    locations = cells_body(rows = parent_rows[-1])
+  ) %>%
+  tab_source_note(
+    source_note = md("*Type: N = Network, CoP = Community of Practice, G = Group.*")
+  ) %>%
+  collab_gt_theme()
+```
+
+### Engagement in the Largest Communities of Practice
+
+The table below summarizes activity in the five largest Collaboratory communities of practice, including participation and engagement within their subgroups.
+
+```{r}
+#| label: top-cops-table
+
+
+# Five largest CoPs by member count (users are computed from the latest snapshot).
+# Topics, posts and likes come from data/manual/cop-activity.csv, with the community
+# identified by Tags or by Community (display name), plus columns Topics, Posts, Likes.
+# Communities missing from that file show n/a.
+activity_cols <- c("Topics", "Posts", "Likes")
+top_cops <- df_cop %>%
+  arrange(desc(Members)) %>%
+  slice_head(n = 5) %>%
+  left_join(community_tags %>% select(Tags, Display_Name), by = "Tags") %>%
+  transmute(
+    Tags,
+    Community = if_else(is.na(Display_Name) | Display_Name == "", Name, Display_Name),
+    Users = Members
+  )
+
+cop_activity <- read_manual("cop-activity")
+if (is.null(cop_activity)) {
+  top_cops[activity_cols] <- NA_real_
+} else {
+  key <- if ("Tags" %in% names(cop_activity)) "Tags" else "Community"
+  top_cops <- top_cops %>%
+    left_join(cop_activity %>% select(all_of(c(key, activity_cols))), by = key)
+}
+top_cops <- top_cops %>%
+  select(-Tags) %>%
+  mutate(across(all_of(activity_cols), ~ ifelse(is.na(.x), "n/a", fmt_n(.x))))
+
+top_cops %>% kable_collab()
+```
+
+### Cross-Community Connectivity {#cross-com}
+
+The following table reflects membership in CoPs only and does not include Networks:
+
+```{r}
+#| label: cop-membership-table
+
+# Display cross-community connectivity table
+cop_membership_summary %>% kable_collab()
+```
+
+### Cross-Community Map
+
+```{r}
+#| label: network-graph-prep
+
+library(tidyverse)
+library(tidygraph)
+library(ggraph)
+
+# ---- Prepare and filter user data ----
+data1_groups <- data1 %>%
+  select(id, group_names) %>%
+  separate_rows(group_names, sep = ";") %>%
+  filter(group_names %in% df_cop$Tags) %>%   # only keep CoP tags
+  distinct(id, group_names)
+
+# ---- Compute shared membership edges ----
+group_pairs <- data1_groups %>%
+  group_by(id) %>%
+  summarise(
+    group_pairings = if(length(unique(group_names)) >= 2) {
+      list(combn(sort(unique(group_names)), 2, simplify = FALSE))
+    } else {
+      list(NULL)
+    },
+    .groups = "drop"
+  ) %>%
+  unnest(group_pairings) %>%
+  filter(!is.null(group_pairings)) %>%
+  mutate(
+    from = map_chr(group_pairings, 1),
+    to = map_chr(group_pairings, 2)
+  ) %>%
+  count(from, to, name = "shared_members")
+
+# ---- Compute node sizes ----
+node_sizes <- df_cop %>%
+  select(Tags, Members) %>%
+  distinct(Tags, .keep_all = TRUE) %>%
+  rename(name = Tags, member_count = Members)
+
+# ---- Build graph ----
+community_graph <- tbl_graph(edges = group_pairs, directed = FALSE) %>%
+  activate(nodes) %>%
+  left_join(node_sizes, by = "name") %>%  # bring in member counts
+left_join(community_tags %>% select(Tags, Display_Name) %>% distinct(Tags, .keep_all = TRUE), by = c("name" = "Tags")) %>% # bring in Display_Name from community_tags
+  mutate(
+    member_count = replace_na(member_count, 1),
+    display_name = if_else(is.na(Display_Name) | Display_Name == "", name, Display_Name)  # fallback to tag if Display_Name missing
+  )
+
+
+```
+
+```{r}
+#| label: network-graph-plot
+#| fig-height: 10
+#| fig-width: 12
+set.seed(cfg$layout_seed)  # same map on every render
+ggraph(community_graph, layout = "fr", niter = 3000) + 
+  geom_edge_link(aes(edge_width = shared_members), alpha = 0.4, color = collab$brand) + 
+  geom_node_point(aes(size = sqrt(member_count)), alpha = 0.9, color = collab$cat0) + 
+  geom_node_text(aes(label = display_name), repel = TRUE, size = 4, force = 10, color = collab$brand_stronger, fontface = "bold") + 
+  scale_size_continuous(range = c(3, 12), name = "Group Size") + 
+  scale_edge_width_continuous(range = c(0.5, 3), name = "Shared Members") + 
+  theme_collab_map() +
+  theme(
+    plot.margin = margin(20, 20, 80, 20),   # extra space for stacked legends
+    legend.justification = "center",
+    legend.box = "vertical"                 # legends stacked vertically
+  )
+
+```

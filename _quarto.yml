@@ -2,7 +2,8 @@ project:
   type: website
   output-dir: docs  
   render:
-    - "*.qmd"
+    - index.qmd
+    - "pages/*.qmd"
     - "!reports/"
   resources:
     - "!data/"
@@ -14,21 +15,32 @@ website:
     left:
       - href: index.qmd
         text: Overview
-      - href: growth.qmd
+      - href: pages/growth.qmd
         text: Platform Growth
-      - href: diversity_reach.qmd
+      - href: pages/diversity-reach.qmd
         text: Representation
-      - href: engagement_collab.qmd
+      - href: pages/engagement-collab.qmd
         text: Engagement & Collaboration
-      - href: communities.qmd
+      - href: pages/communities.qmd
         text: Communities & Connectivity
-      - href: survey.qmd
+      - href: pages/survey.qmd
         text: Survey Results
 
+
+execute:
+  echo: false
+  warning: false
+  message: false
+
+knitr:
+  opts_chunk:
+    out.width: "100%"
 
 format:
   html:
     theme: cosmo
-    css: styles.css
+    css: assets/styles.css
     toc: true
     toc-location: left
+    fig-align: left
+    fig-width: 10

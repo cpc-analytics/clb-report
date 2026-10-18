@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: /
-
-Sitemap: https://15b92a9e-510d-422e-b394-02a8d71f1f3d.netlify.app/sitemap.xml

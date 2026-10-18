@@ -1,0 +1,195 @@
+---
+title: ""
+format: html
+editor: visual
+---
+
+### Geographic Reach {#geo-rep}
+
+```{r}
+#| label: setup
+#| include: false
+source(here::here("R", "setup.R"), echo = FALSE)
+source(here::here("R", "load-data.R"), echo = FALSE)
+source(here::here("R", "map.R"), echo = FALSE)
+
+institution_count <- institution_summary(data1)$unique_domains
+
+```
+
+Members are connecting from **`r geo$n_countries` countries**, based on IP address data. This provides a practical proxy for member distribution, though it may differ from self-reported country of residence. Data may reflect variance in locations due to travel or VPN use.
+
+```{r}
+#| label: geo-map
+
+user_points <- geo_map$points
+
+# Categorize user counts into custom bins
+user_points$category <- cut(
+  user_points$user_count,
+  breaks = c(0, 10, 20, 50, Inf),
+  labels = c("1–10", "11–20", "21–50", "51+"),
+  right = TRUE,
+  include.lowest = TRUE
+)
+
+# Sequential brand scale: more members, darker
+custom_colors <- c(
+  "1–10"  = collab$seq1,
+  "11–20" = collab$seq2,
+  "21–50" = collab$seq3,
+  "51+"   = collab$seq4
+)
+
+# Hover text
+user_points$hover_label <- paste0(
+  "<b>", user_points$COUNTRY, "</b><br>",
+  "Users: ", user_points$user_count
+)
+
+# Base ggplot
+map_plot <- ggplot() +
+  geom_sf(data = geo_map$base, fill = collab$bg_weaker, color = collab$fg_weakest, linewidth = 0.25) +
+  geom_sf(
+    data = user_points,
+    aes(size = user_count, fill = category, text = hover_label),
+    shape = 21, color = collab$fg_weaker, alpha = 0.85, stroke = 0.3
+  ) +
+  scale_size_continuous(range = c(3, 15), guide = "none") +
+  scale_fill_manual(values = custom_colors, name = "User Volume", drop = FALSE) +
+  guides(fill = guide_legend(
+    override.aes = list(size = 6),
+    title.position = "top",
+    title.hjust = 0.5
+  )) +
+  theme_collab_map()
+
+# Title and subtitle
+map_plot +
+  labs(
+    title = "Member Access by Country",
+    subtitle = glue("As of {fmt_date(snapshot_date)}")
+  )
+```
+
+### Regional Reach
+
+All WHO regions are represented among Collaboratory members. The charts show the percentage of members in each region, as well as the distribution of represented countries across regions.
+
+```{r}
+#| label: region-member-share
+#| fig-height: 2
+
+
+
+region_summary_filtered <- region_summary %>%
+  mutate(
+    prop_members = n_members / sum(n_members) * 100,
+    who_region = fct_reorder(who_region, prop_members, .desc = TRUE)
+  )
+
+# Fixed WHO region colors
+region_fills <- region_fill_values(levels(region_summary_filtered$who_region))
+
+ggplot(region_summary_filtered, aes(x = 1, y = prop_members, fill = who_region)) +
+  geom_col(width = 0.3, color = "white") +
+  coord_flip() +
+  geom_text(aes(label = paste0(round(prop_members, 1), "%"), group = who_region,
+                color = label_color(region_fills[as.character(who_region)])),
+            position = position_stack(vjust = 0.5), size = collab_size$label) +
+  scale_color_identity() +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 100), labels = scales::percent_format(scale = 1)) +
+  scale_fill_manual(values = region_fills) +
+  labs(
+    title = "Member Distribution by Region",
+    subtitle = glue("As of {fmt_date(snapshot_date)}"),
+    x = NULL,
+    y = NULL,
+    fill = ""
+  ) +
+  guides(fill = guide_legend(reverse = TRUE))+
+  theme_collab_bar()
+
+
+```
+
+```{r}
+#| label: region-country-share
+#| fig-height: 2
+
+region_summary_filtered_countries <- region_summary %>%
+  mutate(
+    prop_countries = n_countries / sum(n_countries) * 100,
+    # Same factor order as the first plot, so colors and stacking match
+    who_region = factor(who_region, levels = levels(region_summary_filtered$who_region))
+  ) 
+
+ggplot(region_summary_filtered_countries, aes(x = 1, y = prop_countries, fill = who_region)) +
+  geom_col(width = 0.3, color = "white") +
+  coord_flip() +
+  geom_text(aes(label = paste0(round(prop_countries, 1), "%"), group = who_region,
+                color = label_color(region_fills[as.character(who_region)])),
+            position = position_stack(vjust = 0.5), size = collab_size$label) +
+  scale_color_identity() +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 100), labels = scales::percent_format(scale = 1)) +
+  scale_fill_manual(values = region_fills) +
+  labs(
+    title = "Country Distribution by Region",
+    subtitle = glue("As of {fmt_date(snapshot_date)}"),
+    x = NULL,
+    y = NULL,
+    fill = ""
+  ) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  theme_collab_bar()
+
+```
+
+### Institutions {#int-rep}
+
+Collaboratory members come from **`r format_institutions(institution_count)` institutions worldwide**, based on email domain data. The chart shows the proportion of members with WHO-affiliated addresses (@who.int) compared with other institutions. While WHO staff make up a significant share, the platform also includes a broader network of global health professionals and organizations.
+
+```{r}
+#| label: who-affiliated-share
+#| fig-height: 2
+
+# Count WHO vs Non-WHO members (members with a known e-mail domain)
+email_counts <- data1 %>%
+  filter(!is.na(email_domain)) %>%
+  mutate(domain = ifelse(is_who, "WHO Members", "Non-WHO Members")) %>%
+  count(domain) %>%
+  mutate(
+    prop_percent = n / sum(n) * 100,
+    domain = factor(domain, levels = c("WHO Members", "Non-WHO Members"))
+  )
+
+ggplot(email_counts, aes(x = 1, y = prop_percent, fill = domain)) +
+  geom_col(width = 0.3, color = "white") +
+  coord_flip() +
+  geom_text(aes(label = paste0(round(prop_percent, 1), "%")),
+            position = position_stack(vjust = 0.5), size = collab_size$label, color = "white") +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 100), labels = scales::percent_format(scale = 1)) +
+  scale_fill_manual(
+    values = c(
+      "WHO Members" = collab$brand,
+      "Non-WHO Members" = collab$brand_stronger
+    )
+  ) +
+  labs(
+    title = "Proportion of WHO-affiliated Members",
+    subtitle = glue("As of {fmt_date(snapshot_date)}"),
+    x = NULL,
+    y = NULL,
+    fill = ""
+  ) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  theme_collab_bar()
+```
+
+### Disciplines {#dis-rep}
+
+Member disciplinary information is **currently unreported**. Collecting data on members’ professional roles and expertise is planned to provide insights into the range of disciplines represented across the Collaboratory community.
+
+### Gender Distribution {#gen-ratio}
+
+Gender information for members is **currently unreported**. Collecting these data will help monitor diversity and inclusivity across the Collaboratory community.
