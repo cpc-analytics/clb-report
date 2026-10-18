@@ -1,0 +1,12 @@
+#!/bin/bash
+# Refuses to commit files that must stay on this machine, even when added with git add -f.
+
+blocked='^(\.cleanup-log\.md|\.claude/|data/|reports/|docs/)|\.(csv|tsv|rds|rda|RData|xlsx|xls|zip)$|(^|/)\.(Renviron|env)$'
+
+bad=$(git diff --cached --name-only --diff-filter=ACMR | grep -E "$blocked")
+if [ -n "$bad" ]; then
+  echo "Commit refused. These files must not be committed:" >&2
+  echo "$bad" | sed 's/^/  /' >&2
+  echo "Unstage them with: git restore --staged <file>" >&2
+  exit 1
+fi

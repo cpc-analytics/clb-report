@@ -1,8 +1,11 @@
-# Ignore all raw data & code
+# Files left out of the published site (quarto publish)
 *.R
 *.rds
 *.csv
 *.RData
 *.qmd
-data/       # raw data folder
-scripts/    # any code/scripts folder
+data/
+R/
+scripts/
+tests/
+reports/

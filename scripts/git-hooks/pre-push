@@ -1,0 +1,16 @@
+#!/bin/bash
+# Refuses to push commits that contain files which must stay on this machine.
+
+blocked='^(\.cleanup-log\.md|\.claude/|data/|reports/|docs/)|\.(csv|tsv|rds|rda|RData|xlsx|xls|zip)$|(^|/)\.(Renviron|env)$'
+zero=0000000000000000000000000000000000000000
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ "$local_sha" = "$zero" ] && continue
+  bad=$(git log --name-only --diff-filter=ACMR --pretty=format: "$local_sha" --not --remotes | sort -u | grep -E "$blocked")
+  if [ -n "$bad" ]; then
+    echo "Push refused. These commits add files that must not leave this machine:" >&2
+    echo "$bad" | sed 's/^/  /' >&2
+    exit 1
+  fi
+done
+exit 0

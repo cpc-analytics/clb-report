@@ -1,11 +1,32 @@
-.Rproj.user/
-.quarto/
+# Data and reports stay on this machine
 data/
 reports/
-
-/.quarto/
-.RData
-.Rhistory
-.DS_Store
+*.csv
+*.tsv
+*.rds
+*.rda
+*.RData
 *.xlsx
+*.xls
+*.zip
+
+# Build output (the site is published to the gh-pages branch with quarto publish)
+docs/
+.quarto/
+**/*.quarto_ipynb
+*.knit.md
 *.rmarkdown
+
+# R and RStudio
+.Rproj.user/
+.Rhistory
+.Rapp.history
+.Renviron
+.env
+
+# macOS
+.DS_Store
+
+# Local notes and tooling, never pushed
+.cleanup-log.md
+.claude/
