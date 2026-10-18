@@ -1,4 +1,4 @@
-# scripts/_setup.R
+# R/setup.R
 
 
 # Data manipulation & wrangling
@@ -29,3 +29,5 @@ library(tidygraph)    # tidy interface for networks
 library(ggraph)       # graph visualization
 library(igraph)       # network analysis backend
 
+# Shared plot styling
+source(here::here("R", "plot-theme.R"))
