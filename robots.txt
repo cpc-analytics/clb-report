@@ -1,4 +1,2 @@
 User-agent: *
 Disallow: /
-
-Sitemap: https://cpc-analytics.github.io/clb-report/sitemap.xml
