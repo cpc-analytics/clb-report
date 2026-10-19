@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://cpc-analytics.github.io/clb-report/survey.html</loc>
-    <lastmod>2026-10-06T13:38:12.563Z</lastmod>
+    <loc>https://cpc-analytics.github.io/clb-report/pages/survey.html</loc>
+    <lastmod>2026-10-18T14:36:53.845Z</lastmod>
   </url>
   <url>
-    <loc>https://cpc-analytics.github.io/clb-report/growth.html</loc>
-    <lastmod>2026-10-06T13:36:34.599Z</lastmod>
+    <loc>https://cpc-analytics.github.io/clb-report/pages/engagement-collab.html</loc>
+    <lastmod>2026-10-18T14:53:38.198Z</lastmod>
   </url>
   <url>
-    <loc>https://cpc-analytics.github.io/clb-report/diversity_reach.html</loc>
-    <lastmod>2026-10-06T13:33:22.967Z</lastmod>
-  </url>
-  <url>
-    <loc>https://cpc-analytics.github.io/clb-report/communities.html</loc>
-    <lastmod>2026-10-06T13:33:08.479Z</lastmod>
-  </url>
-  <url>
-    <loc>https://cpc-analytics.github.io/clb-report/engagement_collab.html</loc>
-    <lastmod>2026-10-06T13:35:00.283Z</lastmod>
+    <loc>https://cpc-analytics.github.io/clb-report/pages/communities.html</loc>
+    <lastmod>2026-10-19T12:25:03.528Z</lastmod>
   </url>
   <url>
     <loc>https://cpc-analytics.github.io/clb-report/index.html</loc>
-    <lastmod>2026-10-06T13:38:04.670Z</lastmod>
+    <lastmod>2026-10-18T15:54:13.366Z</lastmod>
+  </url>
+  <url>
+    <loc>https://cpc-analytics.github.io/clb-report/pages/diversity-reach.html</loc>
+    <lastmod>2026-10-18T14:29:35.006Z</lastmod>
+  </url>
+  <url>
+    <loc>https://cpc-analytics.github.io/clb-report/pages/growth.html</loc>
+    <lastmod>2026-10-18T14:12:43.315Z</lastmod>
   </url>
 </urlset>
