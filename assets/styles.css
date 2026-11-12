@@ -305,3 +305,442 @@ a:hover {
   color: var(--fg-weaker);
   margin: -16px 0 28px;
 }
+
+/* --- M&E page (pages/me.qmd) --- */
+
+/* Header: quarter and snapshot date, Export as PDF */
+.me-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.me-asof {
+  color: var(--fg-weaker);
+}
+
+.me-asof strong {
+  color: var(--brand-stronger);
+}
+
+/* The two downloads (Excel, PDF): one style, side by side */
+.me-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.me-action {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--brand);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--brand) !important;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none !important;
+  white-space: nowrap;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.me-action:hover {
+  background: var(--brand);
+  color: white !important;
+}
+
+/* Summary tiles: the Overview's KPI cards (brand blue, white text; value in the "target met" green
+   when the target is met), grey while there is no data. Each tile links to its KPI panel. */
+.me-tile-group {
+  margin: 0 0 18px;
+}
+
+.me-tile-section {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--brand-stronger);
+  margin: 0 0 8px;
+}
+
+.me-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+a.me-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: var(--radius);
+  background: var(--brand);
+  color: white;
+  padding: 12px 14px;
+  text-decoration: none;
+}
+
+a.me-tile:hover {
+  background: var(--brand-stronger);
+  color: white;
+}
+
+a.me-tile.pending {
+  background: var(--bg-weaker);
+  border: 1px solid var(--fg-weakest);
+  color: var(--fg-weaker);
+}
+
+a.me-tile.pending:hover {
+  border-color: var(--brand);
+  color: var(--fg-weaker);
+}
+
+.me-tile-name {
+  font-size: 0.78rem;
+}
+
+.me-tile-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 2px;
+}
+
+.me-tile-value.met {
+  color: var(--kpi-met);
+}
+
+.me-tile.pending .me-tile-value {
+  color: var(--fg-weakest);
+}
+
+.me-tile-unit {
+  font-size: 0.72rem;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+/* the status sits at the bottom of every tile, so they line up across a row */
+.me-tile-status {
+  margin-top: auto;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* Status chip in a KPI panel: neutral (the tiles carry the target colours) */
+.me-status {
+  display: inline-block;
+  padding: 1px 8px;
+  border: 1px solid var(--fg-weakest);
+  border-radius: var(--radius);
+  background: var(--bg-weaker);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--brand-stronger);
+}
+
+/* The team's definition: one row of labelled fields, on a quiet band */
+.me-spec {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr) minmax(0, 1.6fr) minmax(0, 0.8fr) minmax(0, 0.8fr);
+  gap: 10px 20px;
+  margin: 10px 0 0;
+  padding: 10px 14px;
+  background: var(--bg-weaker);
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+}
+
+.me-spec dt {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--brand-stronger);
+  margin-bottom: 2px;
+}
+
+.me-spec dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Indicator tracking table: one column per quarter, so columns size to their content and the
+   table scrolls sideways if it gets wider than the page */
+.me-quarterly .collab-table {
+  overflow-x: auto;
+}
+
+.me-quarterly .collab-table table {
+  table-layout: auto;
+}
+
+.me-quarterly .collab-table th:not(:first-child),
+.me-quarterly .collab-table td:not(:first-child) {
+  width: auto;
+  padding: 9px 10px;
+  white-space: nowrap;
+}
+
+/* Source of each quarterly value, as a small line under the indicator */
+.me-source {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--fg-weaker);
+}
+
+.me-quarterly .collab-table td:first-child {
+  min-width: 190px;
+}
+
+/* Calculation details: one item per KPI, closed until clicked */
+.me-details {
+  border-top: 1px solid var(--line);
+  padding: 10px 0;
+}
+
+.me-details:last-of-type {
+  border-bottom: 1px solid var(--line);
+}
+
+.me-details > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--brand-stronger);
+}
+
+.me-details[open] > summary {
+  margin-bottom: 12px;
+}
+
+/* Sections: a rule under the title */
+.me-report h2 {
+  font-size: 1.3rem;
+  margin: 32px 0 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* One panel per KPI, framed like the report's tables */
+.me-kpi {
+  position: relative;
+  border: 1px solid var(--fg-weakest);
+  border-top: 3px solid var(--brand-stronger);
+  border-radius: var(--radius);
+  background: var(--bg);
+  padding: 14px 18px 6px;
+  margin: 0 0 18px;
+}
+
+.me-kpi.pending {
+  border-top-color: var(--fg-weakest);
+  background: var(--bg-weaker);
+  padding-bottom: 14px;
+}
+
+/* the KPI's status sits in the panel's top-right corner, on the heading's line */
+.me-kpi-status {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+}
+
+.me-kpi h3 {
+  font-size: 1.2rem;
+  margin: 0 0 6px;
+  padding-right: 180px;
+  color: var(--brand-stronger);
+}
+
+/* Key figures: one style for every figure (label like a table header, value, note) */
+.me-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px 24px;
+  margin: 10px 0 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.me-stat-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--brand-stronger);
+}
+
+.me-stat-value {
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--brand-stronger);
+  line-height: 1.25;
+}
+
+/* Potential areas listed for a metric still to be defined */
+.me-areas {
+  font-size: 0.8rem;
+  margin: 4px 0 10px;
+  padding-left: 18px;
+}
+
+.me-chart-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--brand-stronger);
+  margin: 14px 0 4px;
+}
+
+.me-stat-note {
+  font-size: 0.75rem;
+  color: var(--fg-weaker);
+}
+
+/* Footnote at the bottom of a panel: a short rule above, marked with an asterisk */
+.me-kpi p.me-footnote {
+  font-size: 0.75rem;
+  color: var(--fg-weaker);
+  border-top: 1px solid var(--fg-weakest);
+  padding-top: 6px;
+  margin-top: 10px;
+}
+
+.me-kpi .cell,
+.me-kpi .cell-output-display,
+.me-kpi figure,
+.me-kpi p {
+  margin-bottom: 0;
+}
+
+.me-kpi .me-spec {
+  background: var(--bg);
+}
+
+@media (max-width: 768px) {
+  .me-spec { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* --- Print layout of the M&E page (Download PDF) ---
+   Only pages that contain .me-report change when printed. The M&E page prints on its own page
+   style with no browser margin, so the browser adds no URL, date or title; the margins are drawn
+   as padding instead, repeated on every printed page. The PDF holds the tiles and the four
+   sections; Quarterly values and Calculation details (.me-no-print) stay on the page. */
+@page me-report {
+  margin: 0;
+}
+
+@media print {
+  html:has(.me-report) {
+    font-size: 10.5px;
+  }
+
+  body:has(.me-report) {
+    page: me-report;
+    font-size: 0.95rem;
+    margin: 0 !important;
+  }
+
+  /* site chrome and the buttons are not part of the report */
+  body:has(.me-report) #quarto-header,
+  body:has(.me-report) .navbar,
+  body:has(.me-report) [id^="quarto-sidebar"],
+  body:has(.me-report) #quarto-margin-sidebar,
+  body:has(.me-report) .sidebar,
+  body:has(.me-report) #TOC,
+  body:has(.me-report) #quarto-back-to-top,
+  body:has(.me-report) .nav-footer,
+  body:has(.me-report) footer,
+  body:has(.me-report) .me-no-print {
+    display: none !important;
+  }
+
+  /* one full-width column, with the page margins as padding on every printed page */
+  body:has(.me-report) #quarto-content,
+  body:has(.me-report) .page-columns {
+    display: block !important;
+  }
+
+  body:has(.me-report) #quarto-document-content,
+  body:has(.me-report) main.content {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 11mm 12mm !important;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  body:has(.me-report) #title-block-header {
+    margin-bottom: 4px;
+  }
+
+  /* keep colors; no link addresses after links */
+  body:has(.me-report) * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .me-report a[href]::after {
+    content: none !important;
+  }
+
+  /* tighter on paper */
+  .me-report .me-header {
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+  }
+
+  .me-report h2 {
+    margin: 14px 0 8px;
+  }
+
+  .me-report .me-tile-group {
+    margin-bottom: 8px;
+  }
+
+  .me-report .me-tiles {
+    gap: 6px;
+  }
+
+  .me-report .me-kpi {
+    padding: 8px 12px 4px;
+    margin-bottom: 8px;
+  }
+
+  .me-report .me-stats {
+    margin: 6px 0 8px;
+    padding-bottom: 8px;
+  }
+
+  /* panels may break between their parts, so no large gaps; keep each part whole */
+  .me-report .me-tile-group,
+  .me-report .me-stats,
+  .me-report .me-spec,
+  .me-report img {
+    break-inside: avoid;
+  }
+
+  .me-report h2,
+  .me-report h3,
+  .me-report .me-chart-label {
+    break-after: avoid;
+  }
+
+  .me-report img {
+    max-width: 100%;
+    height: auto;
+  }
+}
