@@ -573,6 +573,11 @@ a.me-tile.pending:hover {
   border-bottom: 1px solid var(--line);
 }
 
+/* Four key figures: two rows of two, never three and one */
+.me-stats.me-stats-2x2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .me-stat-label {
   font-size: 0.68rem;
   font-weight: 600;
